@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 9,
+  "summary": "Build a website for Sister Telesystem (mobile store).",
+  "architectural_notes": [
+    "Update Contact page details to: Address: Lane 5, Sister Telesystem, Bapuji Nagar, Near Bank of Maharashtra; Phone: +91 9937070901; Email: sister.telesystem@gmail.com."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Monochrome iPhone silhouette watermark illustration (iphone-watermark.dim_1600x1600.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-a-responsive-multi-page-marketing-website-for-a-mobile-store-with-the-following-public-pages-and-sections-home-hero-featured-products-key-selling-points-products-browsable-catalog-with-filters-services-e-g-repairs-unlocking-accessories-about-store-story-and-contact-store-details-inquiry-form",
+      "title": "Create a responsive multi-page marketing website for a mobile store with the following public pages and sections: Home (hero, featured products, key selling points), Products (browsable catalog with filters), Services (e.g., repairs/unlocking/accessories), About (store story), and Contact (store details + inquiry form).",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-coherent-visual-theme-for-the-site-colors-typography-spacing-and-component-styling-and-apply-it-consistently-across-all-pages-use-a-modern-retail-aesthetic-suitable-for-a-mobile-phone-shop-avoid-blue-purple-as-the-primary-palette",
+      "title": "Implement a coherent visual theme for the site (colors, typography, spacing, and component styling) and apply it consistently across all pages. Use a modern retail aesthetic suitable for a mobile phone shop (avoid blue/purple as the primary palette).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-wire-the-frontend-to-the-backend-using-react-query-fetch-and-display-the-product-catalog-from-the-canister-and-submit-the-contact-form-to-the-canister-with-user-friendly-loading-and-error-states",
+      "title": "Wire the frontend to the backend using React Query: fetch and display the product catalog from the canister, and submit the Contact form to the canister with user-friendly loading and error states.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-seed-the-site-with-initial-sample-content-store-name-example-products-example-services-using-non-sensitive-placeholders-that-can-be-edited-later",
+      "title": "Seed the site with initial sample content (store name, example products, example services) using non-sensitive placeholders that can be edited later.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-basic-seo-and-usability-defaults-set-meaningful-page-titles-ensure-headings-are-structured-h1-h2-and-ensure-forms-and-interactive-elements-are-keyboard-accessible-with-visible-focus-states",
+      "title": "Add basic SEO and usability defaults: set meaningful page titles, ensure headings are structured (H1/H2), and ensure forms and interactive elements are keyboard accessible with visible focus states.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-and-include-required-static-images-in-the-frontend-as-assets-and-reference-them-in-the-ui-do-not-serve-generated-images-from-the-backend-place-them-under-frontend-public-assets-generated-and-use-them-for-the-site-header-hero-and-basic-branding",
+      "title": "Generate and include required static images in the frontend as assets and reference them in the UI (do not serve generated images from the backend). Place them under frontend/public/assets/generated and use them for the site header/hero and basic branding.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-store-name-branding-text-across-the-entire-frontend-ui-and-page-metadata-from-the-current-placeholder-name-e-g-mobilehub-to-exactly-sister-telesystem-including-header-footer-branding-page-headings-body-copy-that-mentions-the-store-name-logo-image-alt-text-sample-content-defaults-and-the-document-title-suffix",
+      "title": "Update the store name/branding text across the entire frontend UI and page metadata from the current placeholder name (e.g., “MobileHub”) to exactly “SISTER TELESYSTEM”, including header/footer branding, page headings/body copy that mentions the store name, logo image alt text, sample content defaults, and the document title suffix.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-all-product-price-displays-in-the-frontend-to-use-indian-rupees-inr-formatting-instead-of-dollars-including-the-products-page-product-cards-and-the-home-page-featured-products-section",
+      "title": "Update all product price displays in the frontend to use Indian Rupees (INR) formatting (₹) instead of dollars ($), including the Products page product cards and the Home page featured products section.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-seeded-fallback-sample-product-prices-to-be-realistic-inr-amounts-so-that-when-backend-products-are-unavailable-the-displayed-prices-still-appear-in-inr-scale",
+      "title": "Update the seeded/fallback sample product prices to be realistic INR amounts so that when backend products are unavailable, the displayed prices still appear in INR scale.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-all-contact-us-details-displayed-on-the-site-to-use-exactly-the-following-information-in-english-address-lane-5-sister-telesystem-bapuji-nagar-near-bank-of-maharashtra-phone-91-9937070901-email-sister-telesystem-gmail-com-this-must-be-reflected-anywhere-contact-details-are-shown-including-at-minimum-the-contact-page-contact-info-cards-the-contact-page-map-placeholder-address-text-and-the-site-footer-contact-section",
+      "title": "Update all “Contact Us” details displayed on the site to use exactly the following information (in English):\n- Address: \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\"\n- Phone: \"+91 9937070901\"\n- Email: \"sister.telesystem@gmail.com\"\nThis must be reflected anywhere contact details are shown, including (at minimum) the Contact page contact info cards, the Contact page map placeholder address text, and the site footer contact section.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-subtle-iphone-watermark-graphic-across-the-website-pages-site-wide-implemented-as-a-static-image-overlay-or-background-layer-that-does-not-block-interactions-e-g-does-not-intercept-clicks-scroll-and-maintains-readability-of-page-content",
+      "title": "Add a subtle iPhone watermark graphic across the website pages (site-wide), implemented as a static image overlay or background layer that does not block interactions (e.g., does not intercept clicks/scroll) and maintains readability of page content.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Create a website for the user's mobile store.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Add backend data models and APIs to support a product catalog and contact inquiries: store product items (id, name, brand, category, price, optional image URL, optional short description) and store inquiry submissions (timestamp, name, contact, message).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Update the store name/branding text across the site to “SISTER TELESYSTEM”.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Update product pricing to use Indian Rupees (INR): adjust seeded product prices and display the ₹ currency format consistently across the catalog/UI.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Update the website Contact page/details (store contact information) to the user’s desired contact details.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Add an iPhone watermark graphic on the website pages.",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "SISTER TELESYSTEM",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

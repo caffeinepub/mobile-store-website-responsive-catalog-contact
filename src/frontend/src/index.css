@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.5rem;
+        /* Warm retail palette - orange/amber primary */
+        --background: 0.99 0 0;
+        --foreground: 0.15 0 0;
+        --card: 1 0 0;
+        --card-foreground: 0.15 0 0;
+        --popover: 1 0 0;
+        --popover-foreground: 0.15 0 0;
+        /* Vibrant orange primary */
+        --primary: 0.65 0.19 35;
+        --primary-foreground: 1 0 0;
+        /* Warm secondary */
+        --secondary: 0.96 0.02 85;
+        --secondary-foreground: 0.15 0 0;
+        --muted: 0.96 0.01 85;
+        --muted-foreground: 0.50 0 0;
+        --accent: 0.96 0.02 85;
+        --accent-foreground: 0.15 0 0;
+        --destructive: 0.577 0.245 27.325;
+        --destructive-foreground: 0.985 0 0;
+        --border: 0.90 0.01 85;
+        --input: 0.90 0.01 85;
+        --ring: 0.65 0.19 35;
+        --chart-1: 0.65 0.19 35;
+        --chart-2: 0.55 0.15 60;
+        --chart-3: 0.45 0.12 200;
+        --chart-4: 0.70 0.15 120;
+        --chart-5: 0.60 0.18 300;
+    }
+
+    .dark {
+        --background: 0.12 0 0;
+        --foreground: 0.98 0 0;
+        --card: 0.16 0 0;
+        --card-foreground: 0.98 0 0;
+        --popover: 0.16 0 0;
+        --popover-foreground: 0.98 0 0;
+        /* Bright orange for dark mode */
+        --primary: 0.70 0.20 40;
+        --primary-foreground: 0.10 0 0;
+        --secondary: 0.20 0.02 85;
+        --secondary-foreground: 0.98 0 0;
+        --muted: 0.20 0.01 85;
+        --muted-foreground: 0.65 0 0;
+        --accent: 0.24 0.02 85;
+        --accent-foreground: 0.98 0 0;
+        --destructive: 0.704 0.191 22.216;
+        --destructive-foreground: 0.98 0 0;
+        --border: 0.25 0.01 85;
+        --input: 0.25 0.01 85;
+        --ring: 0.70 0.20 40;
+        --chart-1: 0.70 0.20 40;
+        --chart-2: 0.60 0.16 60;
+        --chart-3: 0.50 0.13 200;
+        --chart-4: 0.75 0.16 120;
+        --chart-5: 0.65 0.19 300;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+    
+    /* Focus visible styles */
+    *:focus-visible {
+        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    }
+    
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@layer components {
+    /* Custom utility for product grid */
+    .product-grid {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+    }
+    
+    /* iPhone watermark overlay */
+    .watermark-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/assets/generated/iphone-watermark.dim_1600x1600.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    .dark .watermark-overlay {
+        opacity: 0.05;
+    }
+}

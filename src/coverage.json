@@ -1,0 +1,58 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-09T14:26:36.997Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-11",
+        "summary": "Update all “Contact Us” details displayed on the site to use exactly the following information (in English):\n- Address: \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\"\n- Phone: \"+91 9937070901\"\n- Email: \"sister.telesystem@gmail.com\"\nThis must be reflected anywhere contact details are shown, including (at minimum) the Contact page contact info cards, the Contact page map placeholder address text, and the site footer contact section.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ContactPage.tsx",
+          "frontend/src/components/SiteFooter.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ContactPage.tsx",
+          "frontend/src/components/SiteFooter.tsx"
+        ]
+      },
+      {
+        "id": "REQ-12",
+        "summary": "Add a subtle iPhone watermark graphic across the website pages (site-wide), implemented as a static image overlay or background layer that does not block interactions (e.g., does not intercept clicks/scroll) and maintains readability of page content.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
+          "frontend/src/App.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
+          "frontend/src/App.tsx",
+          "frontend/src/index.css"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
+    "frontend/src/App.tsx",
+    "frontend/src/components/SiteFooter.tsx",
+    "frontend/src/index.css",
+    "frontend/src/pages/ContactPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
