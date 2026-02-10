@@ -8,11 +8,34 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const UserRole = IDL.Variant({
+  'admin' : IDL.Null,
+  'user' : IDL.Null,
+  'guest' : IDL.Null,
+});
 export const Inquiry = IDL.Record({
   'contact' : IDL.Text,
   'name' : IDL.Text,
   'message' : IDL.Text,
   'timestamp' : IDL.Int,
+});
+export const CustomerDetails = IDL.Record({
+  'name' : IDL.Text,
+  'email' : IDL.Text,
+  'address' : IDL.Text,
+  'phone' : IDL.Text,
+});
+export const OrderItem = IDL.Record({
+  'productId' : IDL.Nat,
+  'quantity' : IDL.Nat,
+  'price' : IDL.Nat,
+});
+export const OrderInfo = IDL.Record({
+  'id' : IDL.Nat,
+  'totalAmount' : IDL.Nat,
+  'customerDetails' : CustomerDetails,
+  'timestamp' : IDL.Int,
+  'items' : IDL.Vec(OrderItem),
 });
 export const Product = IDL.Record({
   'id' : IDL.Nat,
@@ -23,8 +46,10 @@ export const Product = IDL.Record({
   'brand' : IDL.Text,
   'price' : IDL.Nat,
 });
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 
 export const idlService = IDL.Service({
+  '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'addProduct' : IDL.Func(
       [
         IDL.Text,
@@ -37,24 +62,79 @@ export const idlService = IDL.Service({
       [IDL.Nat],
       [],
     ),
+  'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'getAllInquiries' : IDL.Func(
       [IDL.Nat, IDL.Nat],
       [IDL.Vec(Inquiry)],
       ['query'],
     ),
+  'getAllOrders' : IDL.Func([], [IDL.Vec(OrderInfo)], ['query']),
   'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
+  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getOrder' : IDL.Func([IDL.Nat], [IDL.Opt(OrderInfo)], ['query']),
   'getProduct' : IDL.Func([IDL.Nat], [Product], ['query']),
+  'getProductsByBrand' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
+  'getProductsByCategory' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
+  'getUserProfile' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(UserProfile)],
+      ['query'],
+    ),
+  'importProducts' : IDL.Func(
+      [
+        IDL.Vec(
+          IDL.Record({
+            'name' : IDL.Text,
+            'description' : IDL.Opt(IDL.Text),
+            'imageUrl' : IDL.Opt(IDL.Text),
+            'category' : IDL.Text,
+            'brand' : IDL.Text,
+            'price' : IDL.Nat,
+          })
+        ),
+      ],
+      [],
+      [],
+    ),
+  'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'placeOrder' : IDL.Func([CustomerDetails, IDL.Vec(OrderItem)], [IDL.Nat], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'searchProducts' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
   'submitInquiry' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const UserRole = IDL.Variant({
+    'admin' : IDL.Null,
+    'user' : IDL.Null,
+    'guest' : IDL.Null,
+  });
   const Inquiry = IDL.Record({
     'contact' : IDL.Text,
     'name' : IDL.Text,
     'message' : IDL.Text,
     'timestamp' : IDL.Int,
+  });
+  const CustomerDetails = IDL.Record({
+    'name' : IDL.Text,
+    'email' : IDL.Text,
+    'address' : IDL.Text,
+    'phone' : IDL.Text,
+  });
+  const OrderItem = IDL.Record({
+    'productId' : IDL.Nat,
+    'quantity' : IDL.Nat,
+    'price' : IDL.Nat,
+  });
+  const OrderInfo = IDL.Record({
+    'id' : IDL.Nat,
+    'totalAmount' : IDL.Nat,
+    'customerDetails' : CustomerDetails,
+    'timestamp' : IDL.Int,
+    'items' : IDL.Vec(OrderItem),
   });
   const Product = IDL.Record({
     'id' : IDL.Nat,
@@ -65,8 +145,10 @@ export const idlFactory = ({ IDL }) => {
     'brand' : IDL.Text,
     'price' : IDL.Nat,
   });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   
   return IDL.Service({
+    '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'addProduct' : IDL.Func(
         [
           IDL.Text,
@@ -79,13 +161,53 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat],
         [],
       ),
+    'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'getAllInquiries' : IDL.Func(
         [IDL.Nat, IDL.Nat],
         [IDL.Vec(Inquiry)],
         ['query'],
       ),
+    'getAllOrders' : IDL.Func([], [IDL.Vec(OrderInfo)], ['query']),
     'getAllProducts' : IDL.Func([], [IDL.Vec(Product)], ['query']),
+    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getOrder' : IDL.Func([IDL.Nat], [IDL.Opt(OrderInfo)], ['query']),
     'getProduct' : IDL.Func([IDL.Nat], [Product], ['query']),
+    'getProductsByBrand' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
+    'getProductsByCategory' : IDL.Func(
+        [IDL.Text],
+        [IDL.Vec(Product)],
+        ['query'],
+      ),
+    'getUserProfile' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(UserProfile)],
+        ['query'],
+      ),
+    'importProducts' : IDL.Func(
+        [
+          IDL.Vec(
+            IDL.Record({
+              'name' : IDL.Text,
+              'description' : IDL.Opt(IDL.Text),
+              'imageUrl' : IDL.Opt(IDL.Text),
+              'category' : IDL.Text,
+              'brand' : IDL.Text,
+              'price' : IDL.Nat,
+            })
+          ),
+        ],
+        [],
+        [],
+      ),
+    'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'placeOrder' : IDL.Func(
+        [CustomerDetails, IDL.Vec(OrderItem)],
+        [IDL.Nat],
+        [],
+      ),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'searchProducts' : IDL.Func([IDL.Text], [IDL.Vec(Product)], ['query']),
     'submitInquiry' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
   });
 };

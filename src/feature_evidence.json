@@ -1,43 +1,4 @@
 {
   "kind": "feature_evidence_report",
-  "features": [
-    {
-      "featureId": "feature-update-all-contact-us-details-displayed-on-the-site-to-use-exactly-the-following-information-in-english-address-lane-5-sister-telesystem-bapuji-nagar-near-bank-of-maharashtra-phone-91-9937070901-email-sister-telesystem-gmail-com-this-must-be-reflected-anywhere-contact-details-are-shown-including-at-minimum-the-contact-page-contact-info-cards-the-contact-page-map-placeholder-address-text-and-the-site-footer-contact-section",
-      "featureTitle": "Update all “Contact Us” details displayed on the site to use exactly the following information (in English):\n- Address: \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\"\n- Phone: \"+91 9937070901\"\n- Email: \"sister.telesystem@gmail.com\"\nThis must be reflected anywhere contact details are shown, including (at minimum) the Contact page contact info cards, the Contact page map placeholder address text, and the site footer contact section.",
-      "files": [
-        "frontend/src/components/SiteFooter.tsx",
-        "frontend/src/pages/ContactPage.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-11"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-subtle-iphone-watermark-graphic-across-the-website-pages-site-wide-implemented-as-a-static-image-overlay-or-background-layer-that-does-not-block-interactions-e-g-does-not-intercept-clicks-scroll-and-maintains-readability-of-page-content",
-      "featureTitle": "Add a subtle iPhone watermark graphic across the website pages (site-wide), implemented as a static image overlay or background layer that does not block interactions (e.g., does not intercept clicks/scroll) and maintains readability of page content.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-12"
-      ],
-      "confidence": "high"
-    }
-  ]
+  "features": []
 }

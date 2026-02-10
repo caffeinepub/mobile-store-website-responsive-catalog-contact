@@ -1,10 +1,10 @@
 # Specification
 
 ## Summary
-**Goal:** Update site-wide Contact Us information and add a subtle iPhone watermark visible across all pages.
+**Goal:** Ensure the specified Principal is automatically granted admin access and retains it across canister upgrades.
 
 **Planned changes:**
-- Replace all displayed Contact Us details site-wide with the exact new address, phone number, and email (including Contact page info cards, Contact page map placeholder text, and footer Contact Us section).
-- Add a subtle, non-interfering iPhone watermark overlay/background that appears on all pages and uses a static image asset from `frontend/public/assets/generated`.
+- Update backend initialization to register/grant admin permissions to Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` so admin checks recognize it.
+- Ensure the admin allowlist/grant for that Principal persists across canister upgrades (adjust `backend/migration.mo` only if required by the existing upgrade path).
 
-**User-visible outcome:** Visitors see the updated Contact Us address/phone/email everywhere it appears, and all pages display a subtle iPhone watermark without affecting readability or usability.
+**User-visible outcome:** When signed in as Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe`, the Admin Dashboard shows admin content and admin-only actions work both before and after upgrades.

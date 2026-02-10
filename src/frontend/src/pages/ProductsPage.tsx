@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Smartphone, Search, Filter, AlertCircle } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { Smartphone, Search, Filter, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,17 +12,26 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useGetAllProducts } from '../hooks/useQueries';
 import { sampleProducts } from '../content/sampleContent';
 import { formatINR } from '../utils/formatCurrency';
+import SampleCatalogNotice from '../components/catalog/SampleCatalogNotice';
 
 export default function ProductsPage() {
   useDocumentTitle('Products');
-  const { data: backendProducts, isLoading, isError, refetch } = useGetAllProducts();
+  const navigate = useNavigate();
+  const { data: backendProducts, isLoading, isError, refetch, isFetched } = useGetAllProducts();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedBrand, setSelectedBrand] = useState<string>('all');
 
-  // Use backend products if available, otherwise use sample products
-  const allProducts = backendProducts && backendProducts.length > 0 ? backendProducts : sampleProducts;
+  // Use backend products if fetched and available, otherwise fall back to sample products
+  const allProducts = useMemo(() => {
+    if (isFetched && backendProducts && backendProducts.length > 0) {
+      return backendProducts;
+    }
+    return sampleProducts;
+  }, [backendProducts, isFetched]);
+
+  const showingSampleData = isFetched && (!backendProducts || backendProducts.length === 0);
 
   // Extract unique categories and brands
   const categories = useMemo(() => {
@@ -47,6 +57,10 @@ export default function ProductsPage() {
     });
   }, [allProducts, searchQuery, selectedCategory, selectedBrand]);
 
+  const handleProductClick = (productId: bigint) => {
+    navigate({ to: '/products/$productId', params: { productId: productId.toString() } });
+  };
+
   return (
     <div className="container py-12">
       <div className="mb-8">
@@ -55,6 +69,13 @@ export default function ProductsPage() {
           Browse our complete collection of smartphones and accessories
         </p>
       </div>
+
+      {/* Sample Data Notice */}
+      {showingSampleData && (
+        <div className="mb-6">
+          <SampleCatalogNotice />
+        </div>
+      )}
 
       {/* Filters */}
       <div className="mb-8 space-y-4">
@@ -191,18 +212,31 @@ export default function ProductsPage() {
               <Smartphone className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No products found</h3>
               <p className="text-muted-foreground mb-4">
-                Try adjusting your filters or search query
+                {allProducts.length === 0 
+                  ? 'No products are currently available. Please refresh or check back later.'
+                  : 'Try adjusting your filters or search query'}
               </p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('all');
-                  setSelectedBrand('all');
-                }}
-              >
-                Clear Filters
-              </Button>
+              {allProducts.length === 0 ? (
+                <Button
+                  variant="outline"
+                  onClick={() => refetch()}
+                  className="gap-2"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Refresh Products
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedCategory('all');
+                    setSelectedBrand('all');
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              )}
             </div>
           ) : (
             <div className="product-grid">
@@ -226,7 +260,9 @@ export default function ProductsPage() {
                       <span className="text-2xl font-bold text-primary">
                         {formatINR(product.price)}
                       </span>
-                      <Button size="sm">Details</Button>
+                      <Button size="sm" onClick={() => handleProductClick(product.id)}>
+                        Details
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

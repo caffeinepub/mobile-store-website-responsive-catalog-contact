@@ -107,4 +107,65 @@
     .dark .watermark-overlay {
         opacity: 0.05;
     }
+
+    /* App-specific styles */
+    .app-container {
+        @apply min-h-screen bg-background;
+    }
+
+    .app-shell {
+        @apply flex flex-col min-h-screen;
+    }
+
+    .app-top-bar {
+        @apply sticky top-0 z-40 w-full border-b backdrop-blur;
+        background-color: oklch(var(--background) / 0.95);
+    }
+
+    @supports (backdrop-filter: blur(10px)) {
+        .app-top-bar {
+            background-color: oklch(var(--background) / 0.6);
+        }
+    }
+
+    .app-content {
+        @apply flex-1 overflow-y-auto;
+        /* Safe area for mobile devices */
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .app-bottom-nav {
+        @apply fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur;
+        background-color: oklch(var(--background) / 0.95);
+        /* Safe area for mobile devices */
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    @supports (backdrop-filter: blur(10px)) {
+        .app-bottom-nav {
+            background-color: oklch(var(--background) / 0.6);
+        }
+    }
+
+    .app-nav-button {
+        @apply flex flex-col items-center justify-center gap-1 px-4 py-2 text-muted-foreground transition-colors rounded-lg min-w-[80px];
+        /* Ensure adequate tap target size */
+        min-height: 48px;
+    }
+
+    .app-nav-button:hover {
+        @apply bg-accent text-accent-foreground;
+    }
+
+    .app-nav-button:focus-visible {
+        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    }
+
+    .app-nav-button.active {
+        @apply text-primary font-semibold;
+    }
+
+    .app-nav-button.active svg {
+        @apply scale-110;
+    }
 }

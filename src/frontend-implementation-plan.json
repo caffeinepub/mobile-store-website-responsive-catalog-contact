@@ -1,56 +1,6 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update Contact Us details and add iPhone watermark across site",
-  "requirements": [
-    {
-      "id": "REQ-11",
-      "summary": "Replace all visible Contact Us details across the UI with the specified address, phone, and email (including Contact page cards, map placeholder text, and footer contact section).",
-      "acceptanceCriteria": [
-        "The Contact page contact information cards show the updated address, phone number, and email exactly as specified.",
-        "The Contact page map placeholder address text shows the updated address exactly as specified.",
-        "The footer Contact Us section shows the updated address, phone number, and email exactly as specified.",
-        "No old placeholder contact details (e.g., \"123 Mobile Street\", \"(555) 123-4567\", \"info@sistertelesystem.com\") remain visible anywhere in the UI."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/ContactPage.tsx",
-          "operation": "modify",
-          "description": "Update the Contact page contact info cards to use exactly: Address \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\", Phone \"+91 9937070901\", Email \"sister.telesystem@gmail.com\". Also update the map placeholder address text to the same exact address (no old placeholder values)."
-        },
-        {
-          "path": "frontend/src/components/SiteFooter.tsx",
-          "operation": "modify",
-          "description": "Update the footer Contact Us section to use exactly: Address \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\", Phone \"+91 9937070901\", Email \"sister.telesystem@gmail.com\" (remove any old placeholder contact details)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "summary": "Add a subtle, non-interactive iPhone watermark visible site-wide using a generated static asset overlay/background layer.",
-      "acceptanceCriteria": [
-        "An iPhone watermark is visible on all pages (Home, Products, Services, About, Contact).",
-        "The watermark is subtle (low opacity) and does not reduce text readability.",
-        "The watermark does not block any interactions (links, buttons, form inputs remain usable).",
-        "The watermark uses a static asset from frontend/public/assets/generated (not served from the backend)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
-          "operation": "create",
-          "description": "Add the generated monochrome iPhone silhouette watermark illustration asset at exactly this path and filename so it can be referenced statically across the site."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wrap the routed page content in a site-wide watermark container in the RootLayout so the watermark appears on every route (Home, Products, Services, About, Contact) without creating new pages/routes."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add global styles for the site-wide watermark layer (using the static asset frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png) to ensure low opacity, preserved readability, and non-blocking interactions (e.g., pointer-events disabled on the watermark layer)."
-        }
-      ]
-    }
-  ]
+  "title": "Frontend-only plan: no changes required for backend admin allowlist grant",
+  "requirements": []
 }

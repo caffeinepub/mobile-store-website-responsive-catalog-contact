@@ -1,55 +1,39 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T14:26:36.997Z",
+  "generatedAt": "2026-02-10T13:40:18.285Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
     "total": 2,
-    "implemented": 2,
+    "implemented": 0,
     "items": [
       {
-        "id": "REQ-11",
-        "summary": "Update all “Contact Us” details displayed on the site to use exactly the following information (in English):\n- Address: \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\"\n- Phone: \"+91 9937070901\"\n- Email: \"sister.telesystem@gmail.com\"\nThis must be reflected anywhere contact details are shown, including (at minimum) the Contact page contact info cards, the Contact page map placeholder address text, and the site footer contact section.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ContactPage.tsx",
-          "frontend/src/components/SiteFooter.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ContactPage.tsx",
-          "frontend/src/components/SiteFooter.tsx"
-        ]
+        "id": "REQ-1",
+        "summary": "Update the backend authorization so the Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` is registered/granted admin permissions during canister initialization, so that admin checks and admin-gated methods allow this Principal.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
-        "id": "REQ-12",
-        "summary": "Add a subtle iPhone watermark graphic across the website pages (site-wide), implemented as a static image overlay or background layer that does not block interactions (e.g., does not intercept clicks/scroll) and maintains readability of page content.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
-          "frontend/src/App.tsx",
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
-          "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
-          "frontend/src/App.tsx",
-          "frontend/src/index.css"
-        ]
+        "id": "REQ-2",
+        "summary": "Ensure the admin grant/allowlist entry for Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` persists across canister upgrades/redeploys; add or adjust `backend/migration.mo` only if required by the current upgrade path so the Principal remains an admin after upgrade without manual reconfiguration.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
     "feature_evidence.json",
-    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/iphone-watermark.dim_1600x1600.png",
-    "frontend/src/App.tsx",
-    "frontend/src/components/SiteFooter.tsx",
-    "frontend/src/index.css",
-    "frontend/src/pages/ContactPage.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

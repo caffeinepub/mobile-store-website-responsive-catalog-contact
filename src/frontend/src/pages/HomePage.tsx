@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { Smartphone, Shield, Zap, Award, ArrowRight, CheckCircle } from 'lucide-react';
+import { Smartphone, Shield, Zap, Award, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,14 +7,16 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useGetAllProducts } from '../hooks/useQueries';
 import { storeInfo, sampleProducts } from '../content/sampleContent';
 import { formatINR } from '../utils/formatCurrency';
+import SampleCatalogNotice from '../components/catalog/SampleCatalogNotice';
 
 export default function HomePage() {
   useDocumentTitle('Home');
-  const { data: backendProducts, isLoading } = useGetAllProducts();
+  const { data: backendProducts, isLoading, isFetched } = useGetAllProducts();
   
   // Use backend products if available, otherwise use sample products
-  const products = backendProducts && backendProducts.length > 0 ? backendProducts : sampleProducts;
+  const products = (isFetched && backendProducts && backendProducts.length > 0) ? backendProducts : sampleProducts;
   const featuredProducts = products.slice(0, 4);
+  const showingSampleData = isFetched && (!backendProducts || backendProducts.length === 0);
 
   const features = [
     {
@@ -113,6 +115,13 @@ export default function HomePage() {
               </Link>
             </Button>
           </div>
+
+          {/* Sample Data Notice */}
+          {showingSampleData && (
+            <div className="mb-6">
+              <SampleCatalogNotice />
+            </div>
+          )}
           
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -165,7 +174,7 @@ export default function HomePage() {
                 Browse Products
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="text-base px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+            <Button asChild size="lg" variant="outline" className="text-base px-8 border-primary-foreground/20 hover:bg-primary-foreground/10">
               <Link to="/contact">
                 Contact Us
               </Link>

@@ -1,61 +1,68 @@
 {
   "kind": "build_request",
-  "title": "Update Contact Us details and add iPhone watermark across site",
-  "priority": "normal",
+  "title": "Grant admin access to specified Principal ID and persist across upgrades",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-11",
-      "text": "Update all “Contact Us” details displayed on the site to use exactly the following information (in English):\n- Address: \"Lane 5, SISTER TELESYSTEM, Bapuji Nagar, Near Bank of Maharashtra\"\n- Phone: \"+91 9937070901\"\n- Email: \"sister.telesystem@gmail.com\"\nThis must be reflected anywhere contact details are shown, including (at minimum) the Contact page contact info cards, the Contact page map placeholder address text, and the site footer contact section.",
-      "target": "frontend",
+      "id": "REQ-1",
+      "text": "Update the backend authorization so the Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` is registered/granted admin permissions during canister initialization, so that admin checks and admin-gated methods allow this Principal.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "recent-messages-5"
         ],
         "quotes": [
-          "change the contact us to  address lane 5 sister telesystem bapuji nagar near bank of maharastra  phone number \n +91 9937070901 email id - sister.telesystem@gmail.com"
+          "YESS ADD PLEASE"
         ]
       },
       "acceptanceCriteria": [
-        "The Contact page contact information cards show the updated address, phone number, and email exactly as specified.",
-        "The Contact page map placeholder address text shows the updated address exactly as specified.",
-        "The footer Contact Us section shows the updated address, phone number, and email exactly as specified.",
-        "No old placeholder contact details (e.g., \"123 Mobile Street\", \"(555) 123-4567\", \"info@sistertelesystem.com\") remain visible anywhere in the UI."
+        "When authenticated as Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe`, the backend method `isCallerAdmin()` returns `true`.",
+        "When authenticated as that Principal, calling admin-gated methods (`getAllOrders`, `importProducts`, `addProduct`, `getAllInquiries`) does not trap with unauthorized errors.",
+        "When authenticated as that Principal, the frontend Admin Dashboard route renders the admin content instead of the \"Access Denied\" guard state."
       ]
     },
     {
-      "id": "REQ-12",
-      "text": "Add a subtle iPhone watermark graphic across the website pages (site-wide), implemented as a static image overlay or background layer that does not block interactions (e.g., does not intercept clicks/scroll) and maintains readability of page content.",
-      "target": "frontend",
+      "id": "REQ-2",
+      "text": "Ensure the admin grant/allowlist entry for Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` persists across canister upgrades/redeploys; add or adjust `backend/migration.mo` only if required by the current upgrade path so the Principal remains an admin after upgrade without manual reconfiguration.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "recent-messages-4",
+          "recent-messages-5"
         ],
         "quotes": [
-          "and add a water mark of iphone in the web page"
+          "should I add this Principal ID as the admin?\n\nksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe",
+          "YESS ADD PLEASE"
         ]
       },
       "acceptanceCriteria": [
-        "An iPhone watermark is visible on all pages (Home, Products, Services, About, Contact).",
-        "The watermark is subtle (low opacity) and does not reduce text readability.",
-        "The watermark does not block any interactions (links, buttons, form inputs remain usable).",
-        "The watermark uses a static asset from frontend/public/assets/generated (not served from the backend)."
+        "After performing a canister upgrade, authenticating as Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` still results in `isCallerAdmin()` returning `true`.",
+        "After performing a canister upgrade, admin-gated methods still succeed (no unauthorized trap) for that Principal."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or any files under frontend/src/components/ui.",
-    "Place any new generated images under frontend/public/assets/generated and reference them from the frontend; do not serve images from the backend.",
-    "Keep the backend as a single Motoko actor in backend/main.mo; no backend changes are required for this request."
+    "Backend must remain a single Motoko actor with all logic in `backend/main.mo`.",
+    "Create or modify `backend/migration.mo` only if needed to preserve/upgrade existing state (conditional migration policy).",
+    "Do not edit files under `frontend/src/components/ui` or the immutable hook/entry files listed in SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Do not change the inquiry form fields or submission behavior.",
-    "Do not add third-party maps, geolocation, or external embeds; only update the existing map placeholder text.",
-    "Do not redesign site navigation or page structure beyond what is needed to add the watermark and update contact details."
+    "Adding a UI for managing admins (grant/revoke) in the admin dashboard.",
+    "Supporting multiple admins beyond the explicitly provided Principal ID.",
+    "Adding third-party authentication; only Internet Identity is used."
   ],
   "imageRequirements": {
-    "required": [
-      "Monochrome iPhone silhouette watermark illustration (iphone-watermark.dim_1600x1600.png)"
-    ],
+    "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

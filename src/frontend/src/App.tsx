@@ -6,6 +6,11 @@ import ProductsPage from './pages/ProductsPage';
 import ServicesPage from './pages/ServicesPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import AppPage from './pages/AppPage';
+import ProductQuantityPage from './pages/ProductQuantityPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderPlacedPage from './pages/OrderPlacedPage';
+import AdminPage from './pages/AdminPage';
 
 // Layout component with header, footer, and watermark
 function RootLayout() {
@@ -40,6 +45,24 @@ const productsRoute = createRoute({
   component: ProductsPage,
 });
 
+const productQuantityRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/products/$productId',
+  component: ProductQuantityPage,
+});
+
+const checkoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/checkout',
+  component: CheckoutPage,
+});
+
+const orderPlacedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/order-placed/$orderId',
+  component: OrderPlacedPage,
+});
+
 const servicesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/services',
@@ -58,13 +81,30 @@ const contactRoute = createRoute({
   component: ContactPage,
 });
 
+const appRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/app',
+  component: AppPage,
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: AdminPage,
+});
+
 // Create route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
   productsRoute,
+  productQuantityRoute,
+  checkoutRoute,
+  orderPlacedRoute,
   servicesRoute,
   aboutRoute,
   contactRoute,
+  appRoute,
+  adminRoute,
 ]);
 
 // Create router
