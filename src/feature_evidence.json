@@ -1,4 +1,24 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-update-the-admin-access-denied-screen-copy-to-clearly-explain-that-draft-and-live-can-run-on-different-backend-canisters-with-different-stored-admin-state-and-instruct-the-user-to-verify-they-are-on-the-intended-environment-when-reporting-access-issues",
+      "featureTitle": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+      "files": [
+        "frontend/src/components/admin/AdminGuard.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

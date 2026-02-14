@@ -1,39 +1,50 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-10T13:40:18.285Z",
+  "generatedAt": "2026-02-14T06:42:59.050Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 0,
+    "total": 3,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the backend authorization so the Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` is registered/granted admin permissions during canister initialization, so that admin checks and admin-gated methods allow this Principal.",
+        "summary": "Ensure the production (Live) backend always recognizes the following principal as an admin: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, while keeping the existing hardcoded admin principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Ensure the admin grant/allowlist entry for Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` persists across canister upgrades/redeploys; add or adjust `backend/migration.mo` only if required by the current upgrade path so the Principal remains an admin after upgrade without manual reconfiguration.",
+        "summary": "Fix upgrade/republish behavior so that publishing Live does not lose admin access (admin list/authorization state must not be reset to empty during migrations/upgrades).",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/admin/AdminGuard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/admin/AdminGuard.tsx"
+        ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
+    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
+    "frontend/src/components/admin/AdminGuard.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

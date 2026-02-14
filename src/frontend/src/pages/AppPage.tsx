@@ -6,7 +6,7 @@ import AppInquiryPanel from '../components/app/AppInquiryPanel';
 
 export default function AppPage() {
   useDocumentTitle('App');
-  const [activeSection, setActiveSection] = useState<'catalog' | 'inquiry'>('catalog');
+  const [activeSection, setActiveSection] = useState<'catalog' | 'inquiry' | 'cart'>('catalog');
 
   return (
     <div className="app-container">

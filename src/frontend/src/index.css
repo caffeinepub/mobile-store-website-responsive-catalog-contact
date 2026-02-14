@@ -3,169 +3,225 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --radius: 0.5rem;
-        /* Warm retail palette - orange/amber primary */
-        --background: 0.99 0 0;
-        --foreground: 0.15 0 0;
-        --card: 1 0 0;
-        --card-foreground: 0.15 0 0;
-        --popover: 1 0 0;
-        --popover-foreground: 0.15 0 0;
-        /* Vibrant orange primary */
-        --primary: 0.65 0.19 35;
-        --primary-foreground: 1 0 0;
-        /* Warm secondary */
-        --secondary: 0.96 0.02 85;
-        --secondary-foreground: 0.15 0 0;
-        --muted: 0.96 0.01 85;
-        --muted-foreground: 0.50 0 0;
-        --accent: 0.96 0.02 85;
-        --accent-foreground: 0.15 0 0;
-        --destructive: 0.577 0.245 27.325;
-        --destructive-foreground: 0.985 0 0;
-        --border: 0.90 0.01 85;
-        --input: 0.90 0.01 85;
-        --ring: 0.65 0.19 35;
-        --chart-1: 0.65 0.19 35;
-        --chart-2: 0.55 0.15 60;
-        --chart-3: 0.45 0.12 200;
-        --chart-4: 0.70 0.15 120;
-        --chart-5: 0.60 0.18 300;
-    }
+  :root {
+    /* Warm coral accent - distinctive and inviting */
+    --accent: 15 85% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    .dark {
-        --background: 0.12 0 0;
-        --foreground: 0.98 0 0;
-        --card: 0.16 0 0;
-        --card-foreground: 0.98 0 0;
-        --popover: 0.16 0 0;
-        --popover-foreground: 0.98 0 0;
-        /* Bright orange for dark mode */
-        --primary: 0.70 0.20 40;
-        --primary-foreground: 0.10 0 0;
-        --secondary: 0.20 0.02 85;
-        --secondary-foreground: 0.98 0 0;
-        --muted: 0.20 0.01 85;
-        --muted-foreground: 0.65 0 0;
-        --accent: 0.24 0.02 85;
-        --accent-foreground: 0.98 0 0;
-        --destructive: 0.704 0.191 22.216;
-        --destructive-foreground: 0.98 0 0;
-        --border: 0.25 0.01 85;
-        --input: 0.25 0.01 85;
-        --ring: 0.70 0.20 40;
-        --chart-1: 0.70 0.20 40;
-        --chart-2: 0.60 0.16 60;
-        --chart-3: 0.50 0.13 200;
-        --chart-4: 0.75 0.16 120;
-        --chart-5: 0.65 0.19 300;
-    }
+    /* Neutral base colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    * {
-        @apply border-border;
-    }
-    
-    body {
-        @apply bg-background text-foreground;
-        font-feature-settings: "rlig" 1, "calt" 1;
-    }
-    
-    /* Focus visible styles */
-    *:focus-visible {
-        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
-    }
-    
-    /* Smooth scrolling */
-    html {
-        scroll-behavior: smooth;
-    }
+    /* Teal primary for retail theme */
+    --primary: 173 80% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Emerald secondary */
+    --secondary: 142 76% 36%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted neutrals */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Borders and inputs */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 15 85% 60%;
+
+    /* Semantic colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Warm coral accent - same in dark mode */
+    --accent: 15 85% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Dark base colors */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Teal primary - adjusted for dark mode */
+    --primary: 173 80% 50%;
+    --primary-foreground: 222.2 84% 4.9%;
+
+    /* Emerald secondary - adjusted for dark mode */
+    --secondary: 142 76% 45%;
+    --secondary-foreground: 222.2 84% 4.9%;
+
+    /* Muted neutrals for dark */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    /* Borders and inputs for dark */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 15 85% 60%;
+
+    /* Semantic colors for dark */
+    --success: 142 76% 45%;
+    --success-foreground: 222.2 84% 4.9%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 222.2 84% 4.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+  }
 }
 
-@layer components {
-    /* Custom utility for product grid */
-    .product-grid {
-        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
-    }
-    
-    /* iPhone watermark overlay */
-    .watermark-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url('/assets/generated/iphone-watermark.dim_1600x1600.png');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: 40%;
-        opacity: 0.03;
-        pointer-events: none;
-        z-index: 0;
-    }
-    
-    .dark .watermark-overlay {
-        opacity: 0.05;
-    }
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
 
-    /* App-specific styles */
-    .app-container {
-        @apply min-h-screen bg-background;
-    }
+/* Custom focus states */
+@layer utilities {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+  }
+}
 
-    .app-shell {
-        @apply flex flex-col min-h-screen;
-    }
+/* Product grid utility */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
 
-    .app-top-bar {
-        @apply sticky top-0 z-40 w-full border-b backdrop-blur;
-        background-color: oklch(var(--background) / 0.95);
-    }
+/* iPhone watermark overlay */
+.iphone-watermark {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  width: 120px;
+  height: 120px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url('/assets/generated/iphone-watermark.dim_1600x1600.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 
-    @supports (backdrop-filter: blur(10px)) {
-        .app-top-bar {
-            background-color: oklch(var(--background) / 0.6);
-        }
-    }
+/* App-specific utilities */
+.app-section-active {
+  @apply bg-accent text-accent-foreground;
+}
 
-    .app-content {
-        @apply flex-1 overflow-y-auto;
-        /* Safe area for mobile devices */
-        padding-bottom: env(safe-area-inset-bottom, 0);
-    }
+/* Admin Dashboard Styling */
+.admin-container {
+  @apply container mx-auto py-8 px-4 max-w-7xl;
+}
 
-    .app-bottom-nav {
-        @apply fixed bottom-0 left-0 right-0 z-40 border-t backdrop-blur;
-        background-color: oklch(var(--background) / 0.95);
-        /* Safe area for mobile devices */
-        padding-bottom: env(safe-area-inset-bottom, 0);
-    }
+.admin-card {
+  @apply bg-card border border-border rounded-lg shadow-sm;
+}
 
-    @supports (backdrop-filter: blur(10px)) {
-        .app-bottom-nav {
-            background-color: oklch(var(--background) / 0.6);
-        }
-    }
+.admin-card-title {
+  @apply text-2xl font-bold text-foreground;
+}
 
-    .app-nav-button {
-        @apply flex flex-col items-center justify-center gap-1 px-4 py-2 text-muted-foreground transition-colors rounded-lg min-w-[80px];
-        /* Ensure adequate tap target size */
-        min-height: 48px;
-    }
+.admin-table {
+  @apply w-full border-collapse;
+}
 
-    .app-nav-button:hover {
-        @apply bg-accent text-accent-foreground;
-    }
+.admin-table th {
+  background-color: oklch(var(--muted) / 0.5);
+  @apply text-left px-4 py-3 font-semibold text-sm text-muted-foreground border-b border-border;
+}
 
-    .app-nav-button:focus-visible {
-        @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
-    }
+.admin-table td {
+  @apply px-4 py-3 border-b border-border text-sm;
+}
 
-    .app-nav-button.active {
-        @apply text-primary font-semibold;
-    }
+.admin-table tr:hover {
+  background-color: oklch(var(--muted) / 0.3);
+}
 
-    .app-nav-button.active svg {
-        @apply scale-110;
-    }
+/* Admin Alert Variants */
+.admin-alert-success {
+  background-color: oklch(var(--success) / 0.1);
+  border-color: oklch(var(--success) / 0.3);
+  @apply text-success-foreground;
+}
+
+.admin-alert-warning {
+  background-color: oklch(var(--warning) / 0.1);
+  border-color: oklch(var(--warning) / 0.3);
+  @apply text-warning-foreground;
+}
+
+.admin-alert-error {
+  background-color: oklch(var(--destructive) / 0.1);
+  border-color: oklch(var(--destructive) / 0.3);
+  @apply text-destructive-foreground;
+}
+
+.admin-alert-info {
+  background-color: oklch(var(--accent) / 0.1);
+  border-color: oklch(var(--accent) / 0.3);
+}
+
+/* Admin Guard States - Unified Styling */
+.admin-loading-card,
+.admin-auth-card,
+.admin-setup-card {
+  @apply bg-card border-2 border-border shadow-lg;
+}
+
+.admin-error-alert,
+.admin-access-denied-alert {
+  @apply border-2 shadow-lg;
+}
+
+.admin-info-alert {
+  background-color: oklch(var(--accent) / 0.05);
+  border-color: oklch(var(--accent) / 0.2);
+}
+
+.admin-action-button {
+  background-color: oklch(var(--accent));
+  color: oklch(var(--accent-foreground));
+  @apply font-semibold transition-colors;
+}
+
+.admin-action-button:hover {
+  background-color: oklch(var(--accent) / 0.9);
+}
+
+.admin-alert-title {
+  @apply text-foreground;
+}
+
+/* Ensure consistent spacing and typography across admin states */
+.admin-loading-card .admin-card-title,
+.admin-auth-card .admin-card-title,
+.admin-setup-card .admin-card-title {
+  @apply text-2xl font-bold mb-2;
+}
+
+/* Button hierarchy - accent for primary actions */
+.admin-action-button:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }

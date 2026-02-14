@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from '@tanstack/react-router';
-import { Smartphone, Minus, Plus, ShoppingCart, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Smartphone, Minus, Plus, ShoppingCart, AlertCircle, ArrowLeft, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,11 +11,14 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useGetProduct } from '../hooks/useQueries';
 import { formatINR } from '../utils/formatCurrency';
 import { safeParseBigInt, isValidQuantity } from '../utils/safeParse';
+import { useCart } from '../cart/CartContext';
+import { toast } from 'sonner';
 
 export default function ProductQuantityPage() {
-  const { productId } = useParams({ from: '/products/$productId' });
+  const { productId } = useParams({ from: '/products/$productId/quantity' });
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
 
   const productIdBigInt = safeParseBigInt(productId);
   const { data: product, isLoading, isError } = useGetProduct(productIdBigInt);
@@ -43,16 +46,41 @@ export default function ProductQuantityPage() {
     setQuantity(prev => Math.max(1, prev - 1));
   };
 
-  const handleProceedToCheckout = () => {
+  const handleAddToCart = () => {
     if (!product || !isValidQuantity(quantity)) return;
-    
-    navigate({
-      to: '/checkout',
-      search: {
-        productId: product.id.toString(),
-        quantity: quantity.toString(),
-      },
+
+    addItem({
+      productId: product.id,
+      name: product.name,
+      brand: product.brand,
+      category: product.category,
+      unitPrice: product.price,
+      quantity,
+      imageUrl: product.imageUrl ?? undefined,
     });
+
+    toast.success(`Added ${quantity} ${quantity === 1 ? 'item' : 'items'} to cart`, {
+      description: product.name,
+    });
+
+    // Reset quantity after adding
+    setQuantity(1);
+  };
+
+  const handleBuyNow = () => {
+    if (!product || !isValidQuantity(quantity)) return;
+
+    addItem({
+      productId: product.id,
+      name: product.name,
+      brand: product.brand,
+      category: product.category,
+      unitPrice: product.price,
+      quantity,
+      imageUrl: product.imageUrl ?? undefined,
+    });
+
+    navigate({ to: '/checkout' });
   };
 
   if (isLoading) {
@@ -168,16 +196,28 @@ export default function ProductQuantityPage() {
                 </div>
               </div>
 
-              {/* Proceed Button */}
-              <Button
-                size="lg"
-                className="w-full mt-6"
-                onClick={handleProceedToCheckout}
-                disabled={!isValidQuantity(quantity)}
-              >
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Proceed to Checkout
-              </Button>
+              {/* Action Buttons */}
+              <div className="space-y-3 mt-6">
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={handleBuyNow}
+                  disabled={!isValidQuantity(quantity)}
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Buy Now
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleAddToCart}
+                  disabled={!isValidQuantity(quantity)}
+                >
+                  <ShoppingBag className="h-5 w-5 mr-2" />
+                  Add to Cart
+                </Button>
+              </div>
             </div>
           </div>
         </div>

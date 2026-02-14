@@ -1,34 +1,43 @@
-import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router';
+import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { InternetIdentityProvider } from './hooks/useInternetIdentity';
+import { CartProvider } from './cart/CartContext';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
+import ProductQuantityPage from './pages/ProductQuantityPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderPlacedPage from './pages/OrderPlacedPage';
 import ServicesPage from './pages/ServicesPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AppPage from './pages/AppPage';
-import ProductQuantityPage from './pages/ProductQuantityPage';
-import CheckoutPage from './pages/CheckoutPage';
-import OrderPlacedPage from './pages/OrderPlacedPage';
 import AdminPage from './pages/AdminPage';
+import CartPage from './pages/CartPage';
 
-// Layout component with header, footer, and watermark
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
 function RootLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <>
+      <div className="iphone-watermark" aria-hidden="true" />
       <SiteHeader />
-      <main className="flex-1 relative">
-        <div className="watermark-overlay" />
-        <div className="relative z-10">
-          <Outlet />
-        </div>
+      <main className="flex-1">
+        <Outlet />
       </main>
       <SiteFooter />
-    </div>
+    </>
   );
 }
 
-// Define routes
 const rootRoute = createRootRoute({
   component: RootLayout,
 });
@@ -47,7 +56,7 @@ const productsRoute = createRoute({
 
 const productQuantityRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/products/$productId',
+  path: '/products/$productId/quantity',
   component: ProductQuantityPage,
 });
 
@@ -93,7 +102,12 @@ const adminRoute = createRoute({
   component: AdminPage,
 });
 
-// Create route tree
+const cartRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/cart',
+  component: CartPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   productsRoute,
@@ -105,12 +119,11 @@ const routeTree = rootRoute.addChildren([
   contactRoute,
   appRoute,
   adminRoute,
+  cartRoute,
 ]);
 
-// Create router
 const router = createRouter({ routeTree });
 
-// Type declaration for router
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
@@ -118,5 +131,13 @@ declare module '@tanstack/react-router' {
 }
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <InternetIdentityProvider>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </InternetIdentityProvider>
+    </QueryClientProvider>
+  );
 }

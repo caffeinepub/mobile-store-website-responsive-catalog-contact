@@ -2,39 +2,40 @@
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
   "summary": "New project",
-  "architectural_notes": [
-    "Admin authorization should include seeding/initializing at least one admin Principal during canister initialization (or via a secure bootstrap process) to avoid lockout."
-  ],
+  "architectural_notes": [],
   "known_issues": [
-    "Admin dashboard access is blocked because no admin Principal is being added/registered in the backend, causing all Principal IDs to be denied."
+    "Draft vs live behavior mismatch reported: issue appears in live production but not reproducible/visible in draft; user requests diagnosis and fix."
   ],
   "isFixRequest": true,
-  "existing_features": [],
+  "existing_features": [
+    {
+      "id": "feature-update-the-admin-access-denied-screen-copy-to-clearly-explain-that-draft-and-live-can-run-on-different-backend-canisters-with-different-stored-admin-state-and-instruct-the-user-to-verify-they-are-on-the-intended-environment-when-reporting-access-issues",
+      "title": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Register specified Principal ID as an admin during canister initialization to unblock admin dashboard access",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Update the backend authorization so the Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` is registered/granted admin permissions during canister initialization, so that admin checks and admin-gated methods allow this Principal.",
+      "summary": "Ensure the production (Live) backend always recognizes the following principal as an admin: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, while keeping the existing hardcoded admin principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin.",
       "reqIds": [
         "REQ-1"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-3",
-      "summary": "Ensure the admin grant/allowlist entry for Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` persists across canister upgrades/redeploys; add or adjust `backend/migration.mo` only if required by the current upgrade path so the Principal remains an admin after upgrade without manual reconfiguration.",
+      "id": "AR-2",
+      "summary": "Fix upgrade/republish behavior so that publishing Live does not lose admin access (admin list/authorization state must not be reset to empty during migrations/upgrades).",
       "reqIds": [
         "REQ-2"
       ],
       "status": "pending"
     }
   ],
-  "projectName": "Grant admin access to specified Principal ID and persist across upgrades",
+  "projectName": "Fix draft vs live admin access mismatch (grant production admin to specified principal)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

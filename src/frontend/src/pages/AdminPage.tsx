@@ -11,25 +11,25 @@ export default function AdminPage() {
 
   return (
     <AdminGuard>
-      <div className="container py-12">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2">Admin Dashboard</h1>
-          <p className="text-lg text-muted-foreground">
+      <div className="container py-12 admin-container">
+        <div className="mb-8 admin-header">
+          <h1 className="text-4xl font-bold tracking-tight mb-2 admin-title">Admin Dashboard</h1>
+          <p className="text-lg text-muted-foreground admin-subtitle">
             Manage orders and products
           </p>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="orders">Orders</TabsTrigger>
-            <TabsTrigger value="import">Import Products</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="admin-tabs">
+          <TabsList className="mb-6 admin-tabs-list">
+            <TabsTrigger value="orders" className="admin-tab-trigger">Orders</TabsTrigger>
+            <TabsTrigger value="import" className="admin-tab-trigger">Import Products</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="orders">
+          <TabsContent value="orders" className="admin-tab-content">
             <AdminOrdersTable />
           </TabsContent>
 
-          <TabsContent value="import">
+          <TabsContent value="import" className="admin-tab-content">
             <ProductImportPanel />
           </TabsContent>
         </Tabs>

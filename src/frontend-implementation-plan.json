@@ -1,6 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Frontend-only plan: no changes required for backend admin allowlist grant",
-  "requirements": []
+  "title": "Clarify Admin Access Denied copy for Draft vs Live environment differences",
+  "requirements": [
+    {
+      "id": "REQ-3",
+      "summary": "Update the Admin Access Denied message to explain Draft vs Live can run against different backend canisters with different admin state, and prompt users to verify the intended environment when reporting access issues.",
+      "acceptanceCriteria": [
+        "When a user is authenticated but not an admin, the Access Denied UI includes a short explanation that Draft vs Live deployments can have different admin configuration/state, using English user-facing text.",
+        "Existing principal display and copy-to-clipboard functionality remains intact."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/admin/AdminGuard.tsx",
+          "operation": "modify",
+          "description": "Adjust the authenticated-but-not-admin Access Denied panel copy (inside the 'Why am I seeing this?' section) to add a concise explanation that Draft and Live deployments may point to different backend canisters and therefore have different stored admin configuration/state; include a prompt to double-check the environment (Draft vs Live) when reporting access issues, while preserving the existing principal display and copy-to-clipboard behavior. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
 }

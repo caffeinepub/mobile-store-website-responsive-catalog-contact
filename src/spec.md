@@ -1,10 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Ensure the specified Principal is automatically granted admin access and retains it across canister upgrades.
+**Goal:** Fix the Draft vs Live admin authorization mismatch so the specified principal has admin access in the Live deployment and retains it across upgrades, and clarify the Access Denied message for users.
 
 **Planned changes:**
-- Update backend initialization to register/grant admin permissions to Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` so admin checks recognize it.
-- Ensure the admin allowlist/grant for that Principal persists across canister upgrades (adjust `backend/migration.mo` only if required by the existing upgrade path).
+- Backend: Ensure the Live backend recognizes principal `yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae` as an admin while keeping existing hardcoded admin `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` as an admin.
+- Backend: Adjust upgrade/migration behavior so publishing/redeploying Live preserves (or re-establishes) admin authorization state and does not reset admin access to empty.
+- Frontend: Update the Admin “Access Denied” copy to explain Draft vs Live can run on different backend canisters with different stored admin state, while keeping principal display and copy-to-clipboard behavior unchanged.
 
-**User-visible outcome:** When signed in as Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe`, the Admin Dashboard shows admin content and admin-only actions work both before and after upgrades.
+**User-visible outcome:** When logged in with the specified principal in Live, the Admin page shows the admin dashboard (Orders + Import Products) instead of Access Denied, and admin access continues to work after upgrades; users who are denied see clearer guidance about Draft vs Live differences.

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { Smartphone, Search, Filter, AlertCircle, RefreshCw } from 'lucide-react';
+import { Smartphone, Search, Filter, AlertCircle, RefreshCw, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,11 +13,14 @@ import { useGetAllProducts } from '../hooks/useQueries';
 import { sampleProducts } from '../content/sampleContent';
 import { formatINR } from '../utils/formatCurrency';
 import SampleCatalogNotice from '../components/catalog/SampleCatalogNotice';
+import { useCart } from '../cart/CartContext';
+import { toast } from 'sonner';
 
 export default function ProductsPage() {
   useDocumentTitle('Products');
   const navigate = useNavigate();
   const { data: backendProducts, isLoading, isError, refetch, isFetched } = useGetAllProducts();
+  const { addItem } = useCart();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -58,7 +61,25 @@ export default function ProductsPage() {
   }, [allProducts, searchQuery, selectedCategory, selectedBrand]);
 
   const handleProductClick = (productId: bigint) => {
-    navigate({ to: '/products/$productId', params: { productId: productId.toString() } });
+    navigate({ to: '/products/$productId/quantity', params: { productId: productId.toString() } });
+  };
+
+  const handleQuickAddToCart = (e: React.MouseEvent, product: typeof allProducts[0]) => {
+    e.stopPropagation();
+    
+    addItem({
+      productId: product.id,
+      name: product.name,
+      brand: product.brand,
+      category: product.category,
+      unitPrice: product.price,
+      quantity: 1,
+      imageUrl: product.imageUrl ?? undefined,
+    });
+
+    toast.success('Added to cart', {
+      description: product.name,
+    });
   };
 
   return (
@@ -242,7 +263,10 @@ export default function ProductsPage() {
             <div className="product-grid">
               {filteredProducts.map((product) => (
                 <Card key={Number(product.id)} className="overflow-hidden hover:shadow-lg transition-shadow group">
-                  <div className="aspect-square bg-gradient-to-br from-primary/5 to-primary/20 flex items-center justify-center">
+                  <div 
+                    className="aspect-square bg-gradient-to-br from-primary/5 to-primary/20 flex items-center justify-center cursor-pointer"
+                    onClick={() => handleProductClick(product.id)}
+                  >
                     <Smartphone className="h-24 w-24 text-primary/40 group-hover:scale-110 transition-transform" />
                   </div>
                   <CardHeader>
@@ -256,13 +280,28 @@ export default function ProductsPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-primary">
+                    <div className="space-y-3">
+                      <div className="text-2xl font-bold text-primary">
                         {formatINR(product.price)}
-                      </span>
-                      <Button size="sm" onClick={() => handleProductClick(product.id)}>
-                        Details
-                      </Button>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => handleProductClick(product.id)}
+                        >
+                          Details
+                        </Button>
+                        <Button 
+                          size="sm"
+                          className="flex-1"
+                          onClick={(e) => handleQuickAddToCart(e, product)}
+                        >
+                          <ShoppingBag className="h-4 w-4 mr-1" />
+                          Add
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

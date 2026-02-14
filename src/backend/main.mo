@@ -1,18 +1,19 @@
-import Text "mo:core/Text";
 import List "mo:core/List";
-import Iter "mo:core/Iter";
-import Runtime "mo:core/Runtime";
-import Time "mo:core/Time";
 import Map "mo:core/Map";
-import Array "mo:core/Array";
 import Nat "mo:core/Nat";
 import Order "mo:core/Order";
 import Set "mo:core/Set";
+import Array "mo:core/Array";
+import Iter "mo:core/Iter";
+import Migration "migration";
+import Runtime "mo:core/Runtime";
+import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
-// Generic Attitude Marketplace system (with admin hardcoded)
+// Use migration on upgrade/publish
+(with migration = Migration.run)
 actor {
   type Product = {
     id : Nat;
@@ -70,12 +71,13 @@ actor {
   let brands = Set.empty<Text>();
   let userProfiles = Map.empty<Principal, UserProfile>();
 
+  // Initialize access control state
   let accessControlState = AccessControl.initState();
 
+  // Mixin authorization logic
   include MixinAuthorization(accessControlState);
 
   // User Profile Management
-
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can access profiles");
@@ -97,7 +99,7 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Product Management (Admin only for modifications, public for viewing)
+  // Product Management - Admin only
   public shared ({ caller }) func addProduct(
     name : Text,
     brand : Text,
@@ -106,7 +108,7 @@ actor {
     imageUrl : ?Text,
     description : ?Text,
   ) : async Nat {
-    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
       Runtime.trap("Unauthorized: Only admins can add products");
     };
     let productId = nextId;
@@ -124,6 +126,7 @@ actor {
     productId;
   };
 
+  // Product queries - accessible to all
   public query func getProduct(productId : Nat) : async Product {
     switch (products.get(productId)) {
       case (null) { Runtime.trap("Product not found") };
@@ -154,6 +157,7 @@ actor {
     );
   };
 
+  // Product import - Admin only
   public shared ({ caller }) func importProducts(
     productImports : [{
       name : Text;
@@ -183,7 +187,7 @@ actor {
     };
   };
 
-  // Inquiry Management
+  // Inquiry Management - Submit is public, view is admin-only
   public shared func submitInquiry(name : Text, contact : Text, message : Text) : async () {
     let inquiry : Inquiry = {
       timestamp = Time.now();
@@ -199,24 +203,24 @@ actor {
       Runtime.trap("Unauthorized: Only admins can view inquiries");
     };
     let inquiriesArray = inquiries.toArray();
-    let inquiriesSize = inquiriesArray.size();
-    if (inquiriesSize == 0) { return [] };
+    if (inquiriesArray.size() == 0) { return [] };
     let end = Nat.min(offset + limit, inquiriesArray.size());
     if (offset >= end) { return [] };
     inquiries.sliceToArray(offset, end);
   };
 
-  // Order Management
-  public shared func placeOrder(customerDetails : CustomerDetails, items : [OrderItem]) : async Nat {
+  // Order Management - Place order is public, view is admin-only
+  public shared ({ caller }) func placeOrder(customerDetails : CustomerDetails, items : [OrderItem]) : async Nat {
+    // No authorization check - public function
     if (items.size() == 0) {
       Runtime.trap("No items in order");
     };
-    let timestamp = Time.now();
+    let _timestamp = Time.now();
     let totalAmount = calculateTotal(items);
     let orderId = nextId;
     let order : OrderInfo = {
       id = orderId;
-      timestamp;
+      timestamp = Time.now();
       customerDetails;
       items;
       totalAmount;
@@ -240,7 +244,6 @@ actor {
     orders.values().toArray();
   };
 
-  // Helper Functions
   func calculateTotal(items : [OrderItem]) : Nat {
     var total = 0;
     for (item in items.vals()) {

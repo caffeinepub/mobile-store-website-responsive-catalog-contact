@@ -1,18 +1,29 @@
-import { ArrowLeft, Package, MessageSquare } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
+import { ArrowLeft, Package, MessageSquare, ShoppingCart } from 'lucide-react';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 
 interface AppShellProps {
   children: React.ReactNode;
-  activeSection: 'catalog' | 'inquiry';
-  onSectionChange: (section: 'catalog' | 'inquiry') => void;
+  activeSection: 'catalog' | 'inquiry' | 'cart';
+  onSectionChange: (section: 'catalog' | 'inquiry' | 'cart') => void;
 }
 
 export default function AppShell({ children, activeSection, onSectionChange }: AppShellProps) {
+  const navigate = useNavigate();
+
   const sections = [
     { id: 'catalog' as const, label: 'Catalog', icon: Package },
+    { id: 'cart' as const, label: 'Cart', icon: ShoppingCart },
     { id: 'inquiry' as const, label: 'Inquiry', icon: MessageSquare },
   ];
+
+  const handleSectionChange = (section: 'catalog' | 'inquiry' | 'cart') => {
+    if (section === 'cart') {
+      navigate({ to: '/cart' });
+    } else {
+      onSectionChange(section);
+    }
+  };
 
   return (
     <div className="app-shell">
@@ -50,7 +61,7 @@ export default function AppShell({ children, activeSection, onSectionChange }: A
             return (
               <button
                 key={section.id}
-                onClick={() => onSectionChange(section.id)}
+                onClick={() => handleSectionChange(section.id)}
                 className={`app-nav-button ${isActive ? 'active' : ''}`}
                 aria-label={section.label}
                 aria-current={isActive ? 'page' : undefined}

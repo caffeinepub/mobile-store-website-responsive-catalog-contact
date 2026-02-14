@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearch } from '@tanstack/react-router';
-import { ShoppingCart, AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { ShoppingCart, AlertCircle, ArrowLeft, Loader2, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,38 +9,36 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
-import { useGetProduct, usePlaceOrder } from '../hooks/useQueries';
+import { usePlaceOrder } from '../hooks/useQueries';
 import { formatINR } from '../utils/formatCurrency';
-import { safeParseBigInt, safeParsePositiveInt } from '../utils/safeParse';
-import type { CustomerDetails, OrderItem } from '../backend';
+import { useCart } from '../cart/CartContext';
+import { cartItemsToOrderItems, calculateCartTotal } from '../cart/cartTypes';
+import type { CustomerDetails } from '../backend';
 
 export default function CheckoutPage() {
   useDocumentTitle('Checkout');
   const navigate = useNavigate();
-  const search = useSearch({ from: '/checkout' }) as { productId?: string; quantity?: string };
-  
-  const [formData, setFormData] = useState<CustomerDetails>({
+  const { items, clearCart } = useCart();
+  const placeOrderMutation = usePlaceOrder();
+
+  const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     address: '',
   });
-  const [formErrors, setFormErrors] = useState<Partial<CustomerDetails>>({});
 
-  const productId = safeParseBigInt(search.productId);
-  const quantity = safeParsePositiveInt(search.quantity);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const { data: product, isLoading: productLoading, isError: productError } = useGetProduct(productId);
-  const placeOrderMutation = usePlaceOrder();
-
+  // Redirect if cart is empty
   useEffect(() => {
-    if (!productId || !quantity) {
-      navigate({ to: '/products' });
+    if (items.length === 0) {
+      navigate({ to: '/cart' });
     }
-  }, [productId, quantity, navigate]);
+  }, [items.length, navigate]);
 
   const validateForm = (): boolean => {
-    const errors: Partial<CustomerDetails> = {};
+    const errors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
       errors.name = 'Name is required';
@@ -49,13 +47,13 @@ export default function CheckoutPage() {
     if (!formData.phone.trim()) {
       errors.phone = 'Phone number is required';
     } else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
-      errors.phone = 'Invalid phone number';
+      errors.phone = 'Please enter a valid phone number';
     }
 
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = 'Invalid email address';
+      errors.email = 'Please enter a valid email address';
     }
 
     if (!formData.address.trim()) {
@@ -66,73 +64,51 @@ export default function CheckoutPage() {
     return Object.keys(errors).length === 0;
   };
 
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (formErrors[field]) {
+      setFormErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm() || !product || !quantity) return;
+    if (items.length === 0) {
+      return;
+    }
 
-    const orderItems: OrderItem[] = [
-      {
-        productId: product.id,
-        quantity: BigInt(quantity),
-        price: product.price,
-      },
-    ];
+    if (!validateForm()) {
+      return;
+    }
+
+    const customerDetails: CustomerDetails = {
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      address: formData.address.trim(),
+    };
+
+    const orderItems = cartItemsToOrderItems(items);
 
     try {
-      const orderId = await placeOrderMutation.mutateAsync({
-        customerDetails: formData,
-        items: orderItems,
-      });
-
-      navigate({
-        to: '/order-placed/$orderId',
-        params: { orderId: orderId.toString() },
-      });
+      const orderId = await placeOrderMutation.mutateAsync({ customerDetails, items: orderItems });
+      clearCart();
+      navigate({ to: '/order-placed/$orderId', params: { orderId: orderId.toString() } });
     } catch (error) {
-      console.error('Order placement failed:', error);
+      console.error('Order placement error:', error);
     }
   };
 
-  const handleInputChange = (field: keyof CustomerDetails, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (formErrors[field]) {
-      setFormErrors(prev => ({ ...prev, [field]: undefined }));
-    }
-  };
-
-  if (productLoading) {
-    return (
-      <div className="container py-12">
-        <Card className="max-w-4xl mx-auto">
-          <CardContent className="p-12">
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <p className="text-muted-foreground">Loading product details...</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (items.length === 0) {
+    return null; // Will redirect via useEffect
   }
 
-  if (productError || !product || !quantity) {
-    return (
-      <div className="container py-12">
-        <Alert variant="destructive" className="max-w-2xl mx-auto">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription className="flex items-center justify-between">
-            <span>Invalid checkout parameters. Please select a product first.</span>
-            <Button variant="outline" size="sm" onClick={() => navigate({ to: '/products' })}>
-              Back to Products
-            </Button>
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
-  const lineTotal = BigInt(quantity) * product.price;
+  const cartTotal = calculateCartTotal(items);
 
   return (
     <div className="container py-12">
@@ -140,27 +116,32 @@ export default function CheckoutPage() {
         variant="ghost"
         size="sm"
         className="mb-6"
-        onClick={() => navigate({ to: '/products/$productId', params: { productId: product.id.toString() } })}
+        onClick={() => navigate({ to: '/cart' })}
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
-        Back
+        Back to Cart
       </Button>
 
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold tracking-tight mb-8">Checkout</h1>
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold tracking-tight mb-2">Checkout</h1>
+          <p className="text-lg text-muted-foreground">
+            Complete your order details
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Order Form */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Contact Details</CardTitle>
+                <CardTitle>Customer Information</CardTitle>
                 <CardDescription>
-                  Please provide your contact information to complete the order
+                  Please provide your contact and delivery details
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name *</Label>
                     <Input
@@ -179,6 +160,7 @@ export default function CheckoutPage() {
                     <Label htmlFor="phone">Phone Number *</Label>
                     <Input
                       id="phone"
+                      type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       placeholder="+91 9937070901"
@@ -211,7 +193,7 @@ export default function CheckoutPage() {
                       value={formData.address}
                       onChange={(e) => handleInputChange('address', e.target.value)}
                       placeholder="Enter your complete delivery address"
-                      rows={3}
+                      rows={4}
                       className={formErrors.address ? 'border-destructive' : ''}
                     />
                     {formErrors.address && (
@@ -252,44 +234,58 @@ export default function CheckoutPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="md:col-span-1">
+          <div className="lg:col-span-1">
             <Card className="sticky top-20">
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
+                <CardDescription>
+                  {items.length} {items.length === 1 ? 'item' : 'items'}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary/5 to-primary/20 rounded flex items-center justify-center flex-shrink-0">
-                      <ShoppingCart className="h-8 w-8 text-primary/40" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm line-clamp-2">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">{product.brand}</p>
-                    </div>
+                {/* Item List */}
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {items.map((item) => {
+                    const lineTotal = item.unitPrice * BigInt(item.quantity);
+                    return (
+                      <div key={item.productId.toString()} className="flex gap-3 text-sm">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary/5 to-primary/20 rounded flex items-center justify-center shrink-0">
+                          <Package className="h-6 w-6 text-primary/40" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium line-clamp-1">{item.name}</p>
+                          <p className="text-muted-foreground text-xs">
+                            {item.quantity} × {formatINR(item.unitPrice)}
+                          </p>
+                          <p className="font-semibold text-primary">
+                            {formatINR(lineTotal)}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal:</span>
+                    <span className="font-medium">{formatINR(cartTotal)}</span>
                   </div>
-
-                  <Separator />
-
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Price:</span>
-                      <span className="font-medium">{formatINR(product.price)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Quantity:</span>
-                      <span className="font-medium">{quantity}</span>
-                    </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Items:</span>
+                    <span className="font-medium">{items.reduce((sum, item) => sum + item.quantity, 0)}</span>
                   </div>
+                </div>
 
-                  <Separator />
+                <Separator />
 
-                  <div className="flex justify-between items-center pt-2">
-                    <span className="font-semibold">Total:</span>
-                    <span className="text-2xl font-bold text-primary">
-                      {formatINR(lineTotal)}
-                    </span>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">Total:</span>
+                  <span className="text-2xl font-bold text-primary">
+                    {formatINR(cartTotal)}
+                  </span>
                 </div>
               </CardContent>
             </Card>

@@ -1,8 +1,11 @@
 import { Link } from '@tanstack/react-router';
-import { Smartphone, Mail, Phone, MapPin, Heart } from 'lucide-react';
+import { Mail, Phone, MapPin, Heart } from 'lucide-react';
 
 export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
+  const appIdentifier = typeof window !== 'undefined' 
+    ? encodeURIComponent(window.location.hostname) 
+    : 'sister-telesystem';
 
   return (
     <footer className="border-t bg-muted/30">
@@ -89,7 +92,7 @@ export default function SiteFooter() {
           <p className="flex items-center justify-center gap-1 flex-wrap">
             © {currentYear}. Built with <Heart className="h-4 w-4 text-primary fill-primary" /> using{' '}
             <a 
-              href="https://caffeine.ai" 
+              href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${appIdentifier}`}
               target="_blank" 
               rel="noopener noreferrer"
               className="font-medium text-foreground hover:text-primary transition-colors"

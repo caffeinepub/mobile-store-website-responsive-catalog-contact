@@ -1,68 +1,73 @@
 {
   "kind": "build_request",
-  "title": "Grant admin access to specified Principal ID and persist across upgrades",
+  "title": "Fix draft vs live admin access mismatch (grant production admin to specified principal)",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the backend authorization so the Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` is registered/granted admin permissions during canister initialization, so that admin checks and admin-gated methods allow this Principal.",
+      "text": "Ensure the production (Live) backend always recognizes the following principal as an admin: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, while keeping the existing hardcoded admin principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages-5"
+          "recent-messages-user-1"
         ],
         "quotes": [
-          "YESS ADD PLEASE"
+          "WORKING IN DRAFT NOT BUT SHOWING THIS IN THE LIVE  PLEASE TELL ME THE PROBLM AND SOLVE IT"
         ]
       },
       "acceptanceCriteria": [
-        "When authenticated as Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe`, the backend method `isCallerAdmin()` returns `true`.",
-        "When authenticated as that Principal, calling admin-gated methods (`getAllOrders`, `importProducts`, `addProduct`, `getAllInquiries`) does not trap with unauthorized errors.",
-        "When authenticated as that Principal, the frontend Admin Dashboard route renders the admin content instead of the \"Access Denied\" guard state."
+        "When logged in with principal yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae in the Live deployment, admin checks return true and /admin renders the dashboard (Orders + Import Products) instead of Access Denied.",
+        "Principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe remains an admin in both Draft and Live.",
+        "Admin recognition does not depend on any URL token being present (e.g., caffeineAdminToken)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Ensure the admin grant/allowlist entry for Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` persists across canister upgrades/redeploys; add or adjust `backend/migration.mo` only if required by the current upgrade path so the Principal remains an admin after upgrade without manual reconfiguration.",
+      "text": "Fix upgrade/republish behavior so that publishing Live does not lose admin access (admin list/authorization state must not be reset to empty during migrations/upgrades).",
       "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages-4",
-          "recent-messages-5"
+          "recent-messages-user-1"
         ],
         "quotes": [
-          "should I add this Principal ID as the admin?\n\nksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe",
-          "YESS ADD PLEASE"
+          "WORKING IN DRAFT NOT BUT SHOWING THIS IN THE LIVE  PLEASE TELL ME THE PROBLM AND SOLVE IT"
         ]
       },
       "acceptanceCriteria": [
-        "After performing a canister upgrade, authenticating as Principal `ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe` still results in `isCallerAdmin()` returning `true`.",
-        "After performing a canister upgrade, admin-gated methods still succeed (no unauthorized trap) for that Principal."
+        "After an upgrade/redeploy, previously configured admin access continues to work in Live without requiring re-claiming admin or manual intervention.",
+        "Migration logic (if used) preserves or re-establishes the admin principals so that Live does not regress to Access Denied for known admins."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-user-1"
+        ],
+        "quotes": [
+          "WORKING IN DRAFT NOT BUT SHOWING THIS IN THE LIVE  PLEASE TELL ME THE PROBLM AND SOLVE IT"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When a user is authenticated but not an admin, the Access Denied UI includes a short explanation that Draft vs Live deployments can have different admin configuration/state, using English user-facing text.",
+        "Existing principal display and copy-to-clipboard functionality remains intact."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor with all logic in `backend/main.mo`.",
-    "Create or modify `backend/migration.mo` only if needed to preserve/upgrade existing state (conditional migration policy).",
-    "Do not edit files under `frontend/src/components/ui` or the immutable hook/entry files listed in SYSTEM_CONTEXT."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add/adjust migration.mo if required to preserve existing state across upgrades.",
+    "Do not edit files under frontend/src/components/ui (read-only).",
+    "Do not modify immutable paths listed in SYSTEM_CONTEXT (compose around them instead)."
   ],
   "nonGoals": [
-    "Adding a UI for managing admins (grant/revoke) in the admin dashboard.",
-    "Supporting multiple admins beyond the explicitly provided Principal ID.",
-    "Adding third-party authentication; only Internet Identity is used."
+    "Adding third-party authentication providers (only Internet Identity).",
+    "Adding new admin UI features beyond clarifying the error message and restoring correct admin access.",
+    "Introducing external databases or off-canister storage."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }
