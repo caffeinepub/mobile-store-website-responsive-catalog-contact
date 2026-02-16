@@ -63,6 +63,7 @@ export const idlService = IDL.Service({
       [],
     ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'claimInitialAdmin' : IDL.Func([], [], []),
   'getAllInquiries' : IDL.Func(
       [IDL.Nat, IDL.Nat],
       [IDL.Vec(Inquiry)],
@@ -81,6 +82,7 @@ export const idlService = IDL.Service({
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
+  'hasAnyAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'importProducts' : IDL.Func(
       [
         IDL.Vec(
@@ -162,6 +164,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'claimInitialAdmin' : IDL.Func([], [], []),
     'getAllInquiries' : IDL.Func(
         [IDL.Nat, IDL.Nat],
         [IDL.Vec(Inquiry)],
@@ -184,6 +187,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
+    'hasAnyAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'importProducts' : IDL.Func(
         [
           IDL.Vec(

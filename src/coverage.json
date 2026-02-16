@@ -1,50 +1,79 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-14T06:42:59.050Z",
+  "generatedAt": "2026-02-14T11:23:30.043Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 1,
+    "total": 5,
+    "implemented": 2,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Ensure the production (Live) backend always recognizes the following principal as an admin: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, while keeping the existing hardcoded admin principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin.",
+        "summary": "Grant admin privileges in the Live backend to ONLY this Principal ID and ensure it is recognized immediately after deployment: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
         "id": "REQ-2",
-        "summary": "Fix upgrade/republish behavior so that publishing Live does not lose admin access (admin list/authorization state must not be reset to empty during migrations/upgrades).",
+        "summary": "Ensure the backend exposes the admin-check and bootstrap interface expected by the frontend AdminGuard/hooks, and align behavior with the Draft 57/58 expectations: implement isCallerAdmin(): async Bool (preferred) and/or getCallerUserRole(): async UserRole, ensure hasAnyAdmin(): async Bool reflects real admin configuration, and ensure claimInitialAdmin(): async () behaves consistently (either supports bootstrapping when there are zero admins, or clearly indicates bootstrapping is not supported when an admin is already configured).",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
         "id": "REQ-3",
-        "summary": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+        "summary": "Fix upgrade/redeploy persistence so Live does not lose admin access after publishing: persist any authorization/admin configuration/state across canister upgrades and add/adjust backend/migration.mo only if state shape changes require migration.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Ensure the Admin page works in Live format end-to-end: admin navigation to /admin is accessible, AdminGuard correctly verifies admin status against the deployed backend, and the admin dashboard functionality (orders view + product import) works for the configured admin principal.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/admin/AdminGuard.tsx"
+          "frontend/src/hooks/useActor.ts",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/admin/AdminGuard.tsx",
+          "frontend/src/pages/AdminPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/admin/AdminGuard.tsx"
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/admin/AdminGuard.tsx",
+          "frontend/src/pages/AdminPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Apply a coherent, distinctive visual theme across the site (colors, typography, spacing, and component styling) and keep it consistent across public pages and the admin dashboard (do not use a blue/purple primary palette).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/SiteHeader.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js"
         ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/components/admin/AdminGuard.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/AdminPage.tsx",
+    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,18 +1,29 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
+  "summary": "Website project based on Draft 57/58, requiring a working Live deployment with an admin page and admin access granted to a specified Principal ID.",
+  "architectural_notes": [
+    "Admin authorization is principal-based and managed in backend/authorization/access-control.mo (admin allowlist).",
+    "Requirement: only a single admin (the provided Principal ID), not multiple admins."
+  ],
   "known_issues": [
-    "Draft vs live behavior mismatch reported: issue appears in live production but not reproducible/visible in draft; user requests diagnosis and fix."
+    "Build/deploy attempts failed to complete when trying to apply admin access changes (AI unable to implement in prior attempts)."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-update-the-admin-access-denied-screen-copy-to-clearly-explain-that-draft-and-live-can-run-on-different-backend-canisters-with-different-stored-admin-state-and-instruct-the-user-to-verify-they-are-on-the-intended-environment-when-reporting-access-issues",
-      "title": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+      "id": "feature-ensure-the-admin-page-works-in-live-format-end-to-end-admin-navigation-to-admin-is-accessible-adminguard-correctly-verifies-admin-status-against-the-deployed-backend-and-the-admin-dashboard-functionality-orders-view-product-import-works-for-the-configured-admin-principal",
+      "title": "Ensure the Admin page works in Live format end-to-end: admin navigation to /admin is accessible, AdminGuard correctly verifies admin status against the deployed backend, and the admin dashboard functionality (orders view + product import) works for the configured admin principal.",
       "reqIds": [
-        "REQ-3"
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-coherent-distinctive-visual-theme-across-the-site-colors-typography-spacing-and-component-styling-and-keep-it-consistent-across-public-pages-and-the-admin-dashboard-do-not-use-a-blue-purple-primary-palette",
+      "title": "Apply a coherent, distinctive visual theme across the site (colors, typography, spacing, and component styling) and keep it consistent across public pages and the admin dashboard (do not use a blue/purple primary palette).",
+      "reqIds": [
+        "REQ-5"
       ],
       "version": 1
     }
@@ -20,22 +31,48 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Ensure the production (Live) backend always recognizes the following principal as an admin: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, while keeping the existing hardcoded admin principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin.",
+      "summary": "Grant Live admin access to only this Principal ID: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Create/ensure an Admin page that works in the Live site (with all necessary supporting files)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Build and deploy a Live-format website using Draft 57/58 as the base",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Grant admin privileges in the Live backend to ONLY this Principal ID and ensure it is recognized immediately after deployment: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae.",
       "reqIds": [
         "REQ-1"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-2",
-      "summary": "Fix upgrade/republish behavior so that publishing Live does not lose admin access (admin list/authorization state must not be reset to empty during migrations/upgrades).",
+      "id": "AR-5",
+      "summary": "Ensure the backend exposes the admin-check and bootstrap interface expected by the frontend AdminGuard/hooks, and align behavior with the Draft 57/58 expectations: implement isCallerAdmin(): async Bool (preferred) and/or getCallerUserRole(): async UserRole, ensure hasAnyAdmin(): async Bool reflects real admin configuration, and ensure claimInitialAdmin(): async () behaves consistently (either supports bootstrapping when there are zero admins, or clearly indicates bootstrapping is not supported when an admin is already configured).",
       "reqIds": [
         "REQ-2"
       ],
       "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Fix upgrade/redeploy persistence so Live does not lose admin access after publishing: persist any authorization/admin configuration/state across canister upgrades and add/adjust backend/migration.mo only if state shape changes require migration.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
     }
   ],
-  "projectName": "Fix draft vs live admin access mismatch (grant production admin to specified principal)",
+  "projectName": "Fix Live admin access and ensure Admin page works for specified Principal ID",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

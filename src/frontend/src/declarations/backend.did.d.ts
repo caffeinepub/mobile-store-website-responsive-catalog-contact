@@ -54,6 +54,7 @@ export interface _SERVICE {
     bigint
   >,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'claimInitialAdmin' : ActorMethod<[], undefined>,
   'getAllInquiries' : ActorMethod<[bigint, bigint], Array<Inquiry>>,
   'getAllOrders' : ActorMethod<[], Array<OrderInfo>>,
   'getAllProducts' : ActorMethod<[], Array<Product>>,
@@ -64,6 +65,7 @@ export interface _SERVICE {
   'getProductsByBrand' : ActorMethod<[string], Array<Product>>,
   'getProductsByCategory' : ActorMethod<[string], Array<Product>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'hasAnyAdmin' : ActorMethod<[], boolean>,
   'importProducts' : ActorMethod<
     [
       Array<

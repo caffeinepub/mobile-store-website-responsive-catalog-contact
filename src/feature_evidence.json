@@ -2,10 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-admin-access-denied-screen-copy-to-clearly-explain-that-draft-and-live-can-run-on-different-backend-canisters-with-different-stored-admin-state-and-instruct-the-user-to-verify-they-are-on-the-intended-environment-when-reporting-access-issues",
-      "featureTitle": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
+      "featureId": "feature-ensure-the-admin-page-works-in-live-format-end-to-end-admin-navigation-to-admin-is-accessible-adminguard-correctly-verifies-admin-status-against-the-deployed-backend-and-the-admin-dashboard-functionality-orders-view-product-import-works-for-the-configured-admin-principal",
+      "featureTitle": "Ensure the Admin page works in Live format end-to-end: admin navigation to /admin is accessible, AdminGuard correctly verifies admin status against the deployed backend, and the admin dashboard functionality (orders view + product import) works for the configured admin principal.",
       "files": [
-        "frontend/src/components/admin/AdminGuard.tsx"
+        "frontend/src/components/admin/AdminGuard.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/AdminPage.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -16,7 +18,27 @@
         "authorization@4.0.0"
       ],
       "testIds": [
-        "REQ-3"
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-a-coherent-distinctive-visual-theme-across-the-site-colors-typography-spacing-and-component-styling-and-keep-it-consistent-across-public-pages-and-the-admin-dashboard-do-not-use-a-blue-purple-primary-palette",
+      "featureTitle": "Apply a coherent, distinctive visual theme across the site (colors, typography, spacing, and component styling) and keep it consistent across public pages and the admin dashboard (do not use a blue/purple primary palette).",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
       ],
       "confidence": "high"
     }

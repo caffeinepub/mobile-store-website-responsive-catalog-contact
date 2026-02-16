@@ -134,6 +134,7 @@ export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     addProduct(name: string, brand: string, category: string, price: bigint, imageUrl: string | null, description: string | null): Promise<bigint>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    claimInitialAdmin(): Promise<void>;
     getAllInquiries(offset: bigint, limit: bigint): Promise<Array<Inquiry>>;
     getAllOrders(): Promise<Array<OrderInfo>>;
     getAllProducts(): Promise<Array<Product>>;
@@ -144,6 +145,7 @@ export interface backendInterface {
     getProductsByBrand(brand: string): Promise<Array<Product>>;
     getProductsByCategory(category: string): Promise<Array<Product>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    hasAnyAdmin(): Promise<boolean>;
     importProducts(productImports: Array<{
         name: string;
         description?: string;
@@ -200,6 +202,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n2(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async claimInitialAdmin(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.claimInitialAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.claimInitialAdmin();
             return result;
         }
     }
@@ -341,6 +357,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getUserProfile(arg0);
             return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async hasAnyAdmin(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.hasAnyAdmin();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.hasAnyAdmin();
+            return result;
         }
     }
     async importProducts(arg0: Array<{

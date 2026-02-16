@@ -1,19 +1,17 @@
 import List "mo:core/List";
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
-import Order "mo:core/Order";
 import Set "mo:core/Set";
 import Array "mo:core/Array";
+import Order "mo:core/Order";
 import Iter "mo:core/Iter";
-import Migration "migration";
+
 import Runtime "mo:core/Runtime";
 import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
-// Use migration on upgrade/publish
-(with migration = Migration.run)
 actor {
   type Product = {
     id : Nat;
@@ -71,13 +69,18 @@ actor {
   let brands = Set.empty<Text>();
   let userProfiles = Map.empty<Principal, UserProfile>();
 
-  // Initialize access control state
   let accessControlState = AccessControl.initState();
 
-  // Mixin authorization logic
   include MixinAuthorization(accessControlState);
 
-  // User Profile Management
+  public query func hasAnyAdmin() : async Bool {
+    userProfiles.size() > 0;
+  };
+
+  public shared ({ caller }) func claimInitialAdmin() : async () {
+    Runtime.trap("Cannot claim admin: hardcoded admin already exists");
+  };
+
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can access profiles");
@@ -86,7 +89,7 @@ actor {
   };
 
   public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
-    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
+    if (caller != user and not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Can only view your own profile");
     };
     userProfiles.get(user);
@@ -99,7 +102,6 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  // Product Management - Admin only
   public shared ({ caller }) func addProduct(
     name : Text,
     brand : Text,
@@ -126,7 +128,6 @@ actor {
     productId;
   };
 
-  // Product queries - accessible to all
   public query func getProduct(productId : Nat) : async Product {
     switch (products.get(productId)) {
       case (null) { Runtime.trap("Product not found") };
@@ -157,7 +158,6 @@ actor {
     );
   };
 
-  // Product import - Admin only
   public shared ({ caller }) func importProducts(
     productImports : [{
       name : Text;
@@ -187,7 +187,6 @@ actor {
     };
   };
 
-  // Inquiry Management - Submit is public, view is admin-only
   public shared func submitInquiry(name : Text, contact : Text, message : Text) : async () {
     let inquiry : Inquiry = {
       timestamp = Time.now();
@@ -209,9 +208,7 @@ actor {
     inquiries.sliceToArray(offset, end);
   };
 
-  // Order Management - Place order is public, view is admin-only
   public shared ({ caller }) func placeOrder(customerDetails : CustomerDetails, items : [OrderItem]) : async Nat {
-    // No authorization check - public function
     if (items.size() == 0) {
       Runtime.trap("No items in order");
     };

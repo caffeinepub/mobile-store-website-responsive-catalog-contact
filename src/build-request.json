@@ -1,70 +1,107 @@
 {
   "kind": "build_request",
-  "title": "Fix draft vs live admin access mismatch (grant production admin to specified principal)",
+  "title": "Fix Live admin access and ensure Admin page works for specified Principal ID",
   "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure the production (Live) backend always recognizes the following principal as an admin: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, while keeping the existing hardcoded admin principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin.",
+      "text": "Grant admin privileges in the Live backend to ONLY this Principal ID and ensure it is recognized immediately after deployment: yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae.",
       "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages-user-1"
+          "msg-1"
         ],
         "quotes": [
-          "WORKING IN DRAFT NOT BUT SHOWING THIS IN THE LIVE  PLEASE TELL ME THE PROBLM AND SOLVE IT"
+          "ADD MAKE THIS PRINCIPLE ID yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae WORKING IN LIVE SITE WITH ALL ADMIN ACESSES"
         ]
       },
       "acceptanceCriteria": [
-        "When logged in with principal yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae in the Live deployment, admin checks return true and /admin renders the dashboard (Orders + Import Products) instead of Access Denied.",
-        "Principal ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe remains an admin in both Draft and Live.",
-        "Admin recognition does not depend on any URL token being present (e.g., caffeineAdminToken)."
+        "When authenticated via Internet Identity as principal yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae, the admin check used by the frontend resolves to true.",
+        "When authenticated as any other principal, the admin check resolves to false.",
+        "Admin-only backend methods (e.g., getAllOrders, importProducts, addProduct, getAllInquiries) succeed only for the specified principal and trap/deny for non-admin principals."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Fix upgrade/republish behavior so that publishing Live does not lose admin access (admin list/authorization state must not be reset to empty during migrations/upgrades).",
+      "text": "Ensure the backend exposes the admin-check and bootstrap interface expected by the frontend AdminGuard/hooks, and align behavior with the Draft 57/58 expectations: implement isCallerAdmin(): async Bool (preferred) and/or getCallerUserRole(): async UserRole, ensure hasAnyAdmin(): async Bool reflects real admin configuration, and ensure claimInitialAdmin(): async () behaves consistently (either supports bootstrapping when there are zero admins, or clearly indicates bootstrapping is not supported when an admin is already configured).",
       "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages-user-1"
+          "msg-1",
+          "msg-2"
         ],
         "quotes": [
-          "WORKING IN DRAFT NOT BUT SHOWING THIS IN THE LIVE  PLEASE TELL ME THE PROBLM AND SOLVE IT"
+          "MAKE A WEB SITE WITH THE HELP OF DRAFT 57/58",
+          "ADD ... ADMIN PAGE WORKING"
         ]
       },
       "acceptanceCriteria": [
-        "After an upgrade/redeploy, previously configured admin access continues to work in Live without requiring re-claiming admin or manual intervention.",
-        "Migration logic (if used) preserves or re-establishes the admin principals so that Live does not regress to Access Denied for known admins."
+        "Frontend no longer encounters ADMIN_CHECK_UNAVAILABLE due to missing backend methods.",
+        "/admin renders the dashboard for the admin principal without showing the Access Denied state.",
+        "hasAnyAdmin() returns true when the configured admin principal(s) exist, and false only if there are truly no admins configured.",
+        "claimInitialAdmin() behavior is deterministic: if bootstrapping is not supported because an admin is preconfigured, it fails with a clear error; if supported, it can only succeed when there are no admins."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Update the Admin access denied screen copy to clearly explain that Draft and Live can run on different backend canisters with different stored admin state, and instruct the user to verify they are on the intended environment when reporting access issues.",
-      "target": "frontend",
+      "text": "Fix upgrade/redeploy persistence so Live does not lose admin access after publishing: persist any authorization/admin configuration/state across canister upgrades and add/adjust backend/migration.mo only if state shape changes require migration.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "recent-messages-user-1"
+          "msg-1"
         ],
         "quotes": [
-          "WORKING IN DRAFT NOT BUT SHOWING THIS IN THE LIVE  PLEASE TELL ME THE PROBLM AND SOLVE IT"
+          "WORKING IN LIVE SITE WITH ALL ADMIN ACESSES ... IN LIVE SITE"
         ]
       },
       "acceptanceCriteria": [
-        "When a user is authenticated but not an admin, the Access Denied UI includes a short explanation that Draft vs Live deployments can have different admin configuration/state, using English user-facing text.",
-        "Existing principal display and copy-to-clipboard functionality remains intact."
+        "After redeploy/upgrade, the specified principal remains admin without any manual post-deploy steps.",
+        "A redeploy does not revert the system to an Access Denied state for the admin principal.",
+        "If a migration is introduced/modified, existing app data (products, orders, inquiries, user profiles) remains intact."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Ensure the Admin page works in Live format end-to-end: admin navigation to /admin is accessible, AdminGuard correctly verifies admin status against the deployed backend, and the admin dashboard functionality (orders view + product import) works for the configured admin principal.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ALL THE NECESSERY FILES TO RUN THE ADMIN PAGE IN LIVE SITE AND ADMIN PAGE WORKING"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Visiting /admin while logged out shows the login prompt and can authenticate via Internet Identity.",
+        "Visiting /admin while logged in as the configured admin principal shows the Admin Dashboard (tabs render, orders table loads, import panel loads).",
+        "Visiting /admin while logged in as a non-admin shows Access Denied (no admin data is revealed)."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Apply a coherent, distinctive visual theme across the site (colors, typography, spacing, and component styling) and keep it consistent across public pages and the admin dashboard (do not use a blue/purple primary palette).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Public pages and /admin share a consistent design system (typography, colors, button styles, card styles).",
+        "Primary/brand palette is not blue/purple."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo; only add/adjust migration.mo if required to preserve existing state across upgrades.",
-    "Do not edit files under frontend/src/components/ui (read-only).",
-    "Do not modify immutable paths listed in SYSTEM_CONTEXT (compose around them instead)."
+    "Backend must remain a single Motoko actor in backend/main.mo (single-actor architecture).",
+    "Do not edit files under frontend/src/components/ui or other immutable frontend paths listed in SYSTEM_CONTEXT; compose them instead.",
+    "Use Internet Identity only for authentication (no third-party auth providers)."
   ],
   "nonGoals": [
-    "Adding third-party authentication providers (only Internet Identity).",
-    "Adding new admin UI features beyond clarifying the error message and restoring correct admin access.",
-    "Introducing external databases or off-canister storage."
+    "Adding multiple admin principals (scope is ONLY the provided Principal ID).",
+    "Implementing external databases or third-party hosting/services.",
+    "Adding new product features unrelated to admin access and Admin page operability."
   ],
   "imageRequirements": {
     "required": [],

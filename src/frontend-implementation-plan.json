@@ -1,20 +1,61 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Clarify Admin Access Denied copy for Draft vs Live environment differences",
+  "title": "Live admin page operability + cohesive non-blue/purple theme",
   "requirements": [
     {
-      "id": "REQ-3",
-      "summary": "Update the Admin Access Denied message to explain Draft vs Live can run against different backend canisters with different admin state, and prompt users to verify the intended environment when reporting access issues.",
+      "id": "REQ-4",
+      "summary": "Ensure /admin access, AdminGuard verification, and admin dashboard functions (orders + product import) work end-to-end against the Live backend.",
       "acceptanceCriteria": [
-        "When a user is authenticated but not an admin, the Access Denied UI includes a short explanation that Draft vs Live deployments can have different admin configuration/state, using English user-facing text.",
-        "Existing principal display and copy-to-clipboard functionality remains intact."
+        "Visiting /admin while logged out shows the login prompt and can authenticate via Internet Identity.",
+        "Visiting /admin while logged in as the configured admin principal shows the Admin Dashboard (tabs render, orders table loads, import panel loads).",
+        "Visiting /admin while logged in as a non-admin shows Access Denied (no admin data is revealed)."
       ],
       "file_operations": [
         {
+          "path": "frontend/src/hooks/useActor.ts",
+          "operation": "modify",
+          "description": "Harden Live actor bootstrap so admin checks cannot fail due to optional bootstrap/init calls: only attempt access-control initialization when supported, ensure missing/invalid secret does not block actor creation, and keep identity changes triggering query invalidation."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Align admin-check behavior with the Live backend interface: keep isCallerAdmin/getCallerUserRole fallback, refine error mapping to avoid false 'Access Denied' on transient failures, and ensure admin queries refetch cleanly when identity/actor changes."
+        },
+        {
           "path": "frontend/src/components/admin/AdminGuard.tsx",
           "operation": "modify",
-          "description": "Adjust the authenticated-but-not-admin Access Denied panel copy (inside the 'Why am I seeing this?' section) to add a concise explanation that Draft and Live deployments may point to different backend canisters and therefore have different stored admin configuration/state; include a prompt to double-check the environment (Draft vs Live) when reporting access issues, while preserving the existing principal display and copy-to-clipboard behavior. Verify the component's usage instructions before implementing."
+          "description": "Improve AdminGuard Live UX and reliability: ensure login prompt/denied states are deterministic, add clear retry/refresh guidance for real admin-check failures, and keep claim-initial-admin UI gated strictly by hasAnyAdmin. Use existing shadcn-ui (Button/Card/Alert) composition for these states; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/AdminPage.tsx",
+          "operation": "modify",
+          "description": "Confirm the admin dashboard renders consistently under AdminGuard and that tabs/panels mount only after admin verification (preventing accidental unauthorized fetches). Use existing shadcn-ui Tabs components via composition; verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Apply a coherent, distinctive theme across public pages and /admin, avoiding blue/purple as the primary palette.",
+      "acceptanceCriteria": [
+        "Public pages and /admin share a consistent design system (typography, colors, button styles, card styles).",
+        "Primary/brand palette is not blue/purple."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Refine global theme tokens and shared utility styles so public pages and admin states share consistent typography, spacing, and surface styling (keeping the existing teal/coral direction and avoiding blue/purple). Ensure admin-specific utility classes match the global design language."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Adjust Tailwind theme extensions (fonts/shadows/radius/animations if needed) to support a consistent site-wide design system used by both public pages and /admin."
+        },
+        {
+          "path": "frontend/src/components/SiteHeader.tsx",
+          "operation": "modify",
+          "description": "Ensure header branding/navigation styling matches the global theme (buttons, active states, logo block) and stays consistent between public routes and /admin. Use existing shadcn-ui Button/Badge composition; verify the component's usage instructions before implementing."
         }
       ]
     }

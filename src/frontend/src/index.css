@@ -4,7 +4,11 @@
 
 @layer base {
   :root {
-    /* Warm coral accent - distinctive and inviting */
+    /* Warm teal primary - distinctive retail theme */
+    --primary: 173 80% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Coral accent - warm and inviting */
     --accent: 15 85% 60%;
     --accent-foreground: 0 0% 100%;
 
@@ -15,10 +19,6 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
-    /* Teal primary for retail theme */
-    --primary: 173 80% 40%;
-    --primary-foreground: 0 0% 100%;
 
     /* Emerald secondary */
     --secondary: 142 76% 36%;
@@ -45,7 +45,11 @@
   }
 
   .dark {
-    /* Warm coral accent - same in dark mode */
+    /* Warm teal primary - adjusted for dark mode */
+    --primary: 173 80% 50%;
+    --primary-foreground: 222.2 84% 4.9%;
+
+    /* Coral accent - same in dark mode */
     --accent: 15 85% 60%;
     --accent-foreground: 0 0% 100%;
 
@@ -56,10 +60,6 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
-    /* Teal primary - adjusted for dark mode */
-    --primary: 173 80% 50%;
-    --primary-foreground: 222.2 84% 4.9%;
 
     /* Emerald secondary - adjusted for dark mode */
     --secondary: 142 76% 45%;
@@ -90,7 +90,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
 
@@ -196,8 +196,8 @@
 }
 
 .admin-info-alert {
-  background-color: oklch(var(--accent) / 0.05);
-  border-color: oklch(var(--accent) / 0.2);
+  background-color: oklch(var(--primary) / 0.05);
+  border-color: oklch(var(--primary) / 0.2);
 }
 
 .admin-action-button {

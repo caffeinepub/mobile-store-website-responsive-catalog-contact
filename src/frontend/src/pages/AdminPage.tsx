@@ -14,15 +14,17 @@ export default function AdminPage() {
       <div className="container py-12 admin-container">
         <div className="mb-8 admin-header">
           <h1 className="text-4xl font-bold tracking-tight mb-2 admin-title">Admin Dashboard</h1>
-          <p className="text-lg text-muted-foreground admin-subtitle">
-            Manage orders and products
-          </p>
+          <p className="text-lg text-muted-foreground admin-subtitle">Manage orders and products</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="admin-tabs">
           <TabsList className="mb-6 admin-tabs-list">
-            <TabsTrigger value="orders" className="admin-tab-trigger">Orders</TabsTrigger>
-            <TabsTrigger value="import" className="admin-tab-trigger">Import Products</TabsTrigger>
+            <TabsTrigger value="orders" className="admin-tab-trigger">
+              Orders
+            </TabsTrigger>
+            <TabsTrigger value="import" className="admin-tab-trigger">
+              Import Products
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders" className="admin-tab-content">

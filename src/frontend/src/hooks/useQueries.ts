@@ -87,19 +87,20 @@ export function useHasAnyAdmin() {
       });
 
       try {
-        // Use type assertion to check if method exists at runtime
-        const actorAny = actor as any;
-        if (typeof actorAny.hasAnyAdmin === 'function') {
-          const result = await Promise.race([actorAny.hasAnyAdmin(), timeoutPromise]);
+        // Check if method exists at runtime
+        if (typeof actor.hasAnyAdmin === 'function') {
+          const result = await Promise.race([actor.hasAnyAdmin(), timeoutPromise]);
           console.log('hasAnyAdmin result:', result);
           return result;
         }
-        
-        console.error('hasAnyAdmin method not found on actor');
-        throw new Error('Backend interface mismatch: hasAnyAdmin method not available');
+
+        // If method doesn't exist, assume admins are preconfigured (hardcoded)
+        console.log('hasAnyAdmin method not found - assuming hardcoded admins exist');
+        return true;
       } catch (error: any) {
         console.error('hasAnyAdmin check error:', error);
-        throw error;
+        // On error, assume admins might be preconfigured
+        return true;
       }
     },
     enabled: isActorReady && !!identity,
@@ -115,14 +116,22 @@ export function useClaimInitialAdmin() {
   return useMutation({
     mutationFn: async () => {
       if (!actor) throw new Error('Actor not initialized');
-      
-      // Use type assertion to check if method exists at runtime
-      const actorAny = actor as any;
-      if (typeof actorAny.claimInitialAdmin !== 'function') {
-        throw new Error('Backend interface mismatch: claimInitialAdmin method not available');
+
+      // Check if method exists at runtime
+      if (typeof actor.claimInitialAdmin !== 'function') {
+        throw new Error('BOOTSTRAPPING_NOT_SUPPORTED');
       }
 
-      await actorAny.claimInitialAdmin();
+      try {
+        await actor.claimInitialAdmin();
+      } catch (error: any) {
+        const errorMessage = error?.message || String(error);
+        // If backend says hardcoded admin exists, treat as "bootstrapping not supported"
+        if (errorMessage.includes('hardcoded admin already exists') || errorMessage.includes('Cannot claim admin')) {
+          throw new Error('BOOTSTRAPPING_NOT_SUPPORTED');
+        }
+        throw error;
+      }
     },
     onSuccess: () => {
       // Invalidate all admin-related queries to refresh state
@@ -149,7 +158,7 @@ export function useIsCallerAdmin() {
       if (!actor) {
         throw new Error('Actor not initialized');
       }
-      
+
       // If no identity, we're anonymous - return false without calling backend
       if (!identity) {
         return false;
@@ -158,7 +167,7 @@ export function useIsCallerAdmin() {
       // Create a timeout promise to prevent indefinite hanging
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => {
-          reject(new Error('Admin check timed out after 8 seconds. The backend may be unresponsive or the method may not be available.'));
+          reject(new Error('Admin check timed out after 8 seconds'));
         }, ADMIN_CHECK_TIMEOUT);
       });
 
@@ -182,25 +191,26 @@ export function useIsCallerAdmin() {
           }
 
           // If neither method is available, throw an error
-          console.error('Neither isCallerAdmin nor getCallerUserRole methods found on actor. Available methods:', Object.keys(actor));
-          throw new Error('Backend interface mismatch: Admin check methods not available. The canister may need to be redeployed.');
+          console.error('Neither isCallerAdmin nor getCallerUserRole methods found on actor');
+          throw new Error('ADMIN_CHECK_UNAVAILABLE');
         } catch (error: any) {
           console.error('Admin check error:', error);
-          
+
           // Map common authorization failures to false (access denied) rather than error state
           const errorMessage = error?.message || String(error);
-          
+
           // These are expected "not admin" responses - return false
           if (
             errorMessage.includes('Unauthorized') ||
             errorMessage.includes('not have permission') ||
             errorMessage.includes('Access denied') ||
-            errorMessage.includes('not authorized')
+            errorMessage.includes('not authorized') ||
+            errorMessage.includes('Only admins')
           ) {
             console.log('Authorization denied - treating as non-admin');
             return false;
           }
-          
+
           // For other errors (timeouts, interface mismatches, etc.), propagate them
           throw error;
         }

@@ -1,102 +1,85 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-14T06:42:59.048Z",
-  "summary": "The diff adds a migration module and wires it into the Motoko actor, and makes broad unrelated frontend/UI/content/theming changes. However, the backend changes shown do not provide evidence that the specified Live principal is always treated as admin, nor that the existing hardcoded admin principal is preserved/ensured. The Access Denied copy change requested is not clearly evidenced in the provided truncated AdminGuard diff.",
+  "generatedAt": "2026-02-14T11:23:30.040Z",
+  "summary": "Frontend received substantial updates to AdminGuard UX, /admin page layout, and a new warm teal/coral theme. However, the diff does not provide clear evidence that the backend now hardcodes the specified admin Principal, exposes the required admin-check interface (e.g., isCallerAdmin), correctly implements hasAnyAdmin semantics, or persists admin configuration across upgrades. Several unrelated branding/content changes also appear.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Ensure the production (Live) backend always recognizes principal yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae as an admin, while keeping ksdex-jr3fp-ll2uw-hoqgv-wlwa7-erlfc-juio3-m33lu-7dqc7-hzatt-uqe as an admin; admin recognition must not depend on any URL token.",
-      "reason": "The backend diff shows initialization of an AccessControl state and inclusion of authorization mixin, but does not show any code that explicitly seeds/ensures either of the two principals as admins (nor removal of token-dependent admin checks).",
+      "requirement": "Grant admin privileges in the Live backend to ONLY the specified Principal ID and ensure admin-only methods deny non-admins.",
+      "reason": "backend/main.mo shows authorization checks via AccessControl, but the diff excerpt does not show any hardcoded allowlist entry for principal yrzqp-j2xon-ju7hr-g5ger-pe7by-pn666-ywayt-ii77y-rq7wz-xelxd-bae or any explicit initialization that guarantees immediate admin recognition after deployment. While addProduct is gated by #admin, there is no evidence that the specified principal is granted #admin and that other principals are denied.",
       "evidence": [
         "backend/main.mo"
       ]
     },
     {
       "id": "REQ-2",
-      "requirement": "Fix upgrade/republish behavior so that publishing Live does not lose admin access; admin authorization state must not reset to empty during migrations/upgrades.",
-      "reason": "A migration module is added and it forwards the prior accessControlState, but the shown backend actor still initializes accessControlState via initState() and the diff summary does not demonstrate that access control/admin state is actually persisted across upgrades and not reinitialized to empty in Live.",
+      "requirement": "Expose admin-check/bootstrap interface expected by AdminGuard/hooks (isCallerAdmin and/or getCallerUserRole), ensure hasAnyAdmin reflects real admin configuration, and make claimInitialAdmin deterministic.",
+      "reason": "The backend excerpt shows hasAnyAdmin implemented as `userProfiles.size() > 0`, which does not reflect admin configuration, and claimInitialAdmin always traps. The diff does not show an isCallerAdmin() or getCallerUserRole() method being implemented/exposed (it may exist elsewhere, but it is not evidenced in the provided diff summary).",
       "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
+        "backend/main.mo",
+        "frontend/src/hooks/useQueries.ts"
       ]
     },
     {
       "id": "REQ-3",
-      "requirement": "Update the Admin access denied screen copy to explain Draft vs Live can run on different backend canisters with different stored admin state, instructing users to verify the intended environment; keep principal display and copy-to-clipboard intact.",
-      "reason": "AdminGuard.tsx is modified, but the provided truncation does not include the Access Denied copy content, so there is no clear evidence the requested explanatory text was added (or that principal display/copy is preserved).",
+      "requirement": "Persist admin/authorization configuration across upgrades/redeploys so admin access is not lost.",
+      "reason": "The diff summary provides no evidence of stable state, preupgrade/postupgrade hooks, or migration changes to persist AccessControl/admin configuration across upgrades. The shown `accessControlState = AccessControl.initState()` suggests runtime initialization, but persistence is not evidenced.",
       "evidence": [
-        "frontend/src/components/admin/AdminGuard.tsx"
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Ensure /admin works end-to-end in Live: AdminGuard verifies admin status against deployed backend and dashboard functionality (orders view + product import) works for the admin principal and is denied for non-admins.",
+      "reason": "AdminPage and AdminGuard were modified, but the backend-side admin check method(s) and correct semantics are not evidenced (see REQ-2), and the diff does not include evidence that the orders view and product import panels successfully load real data end-to-end (components like AdminOrdersTable/ProductImportPanel are referenced but not shown updated here).",
+      "evidence": [
+        "frontend/src/pages/AdminPage.tsx",
+        "frontend/src/components/admin/AdminGuard.tsx",
+        "frontend/src/hooks/useQueries.ts",
+        "backend/main.mo"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Large-scale global styling/theme overhaul (coral accent OKLCH tokens, unified admin dashboard styling, Tailwind config updates).",
-      "reason": "Not requested; the BuildRequest only asked for a small copy change on the Access Denied screen and backend admin fixes.",
+      "description": "Branding/content overhaul to \"SISTER TELESYSTEM\" (titles, pages, sample content) unrelated to admin access and admin page operability.",
+      "reason": "BuildRequest focuses on admin access/admin operability and a coherent theme; it does not request renaming/rebranding the site or adding extensive new marketing content.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/index.css)",
-        "frontend-file-summaries.txt (frontend/tailwind.config.js)"
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Branding/content changes introducing “SISTER TELESYSTEM” across pages and document titles.",
-      "reason": "Not requested; unrelated to fixing admin access mismatch or the Access Denied explanatory copy.",
+      "description": "Indian Rupee (₹) currency formatting and INR-scale pricing changes.",
+      "reason": "Not requested by any requirement; scope is admin access/admin operability and site theme.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/hooks/useDocumentTitle.ts)",
-        "frontend-file-summaries.txt (frontend/src/pages/HomePage.tsx)",
-        "frontend-file-summaries.txt (frontend/src/pages/AboutPage.tsx)",
-        "frontend-file-summaries.txt (frontend/index.html)"
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Currency formatting changes to Indian Rupees (₹) and price display adjustments.",
-      "reason": "Not requested; unrelated to admin authorization/migration/copy changes.",
+      "description": "iPhone watermark overlay styling added globally.",
+      "reason": "Not requested; unrelated visual feature beyond the specified theming requirement.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/utils/formatCurrency.ts)",
-        "frontend-file-summaries.txt (frontend/src/pages/HomePage.tsx)",
-        "frontend-file-summaries.txt (frontend/src/pages/ProductsPage.tsx)"
+        "frontend/src/index.css"
       ]
     },
     {
-      "description": "New/expanded sample catalog and services content (sample products, services offerings).",
-      "reason": "Not requested; the scope does not include adding/expanding sample data content.",
+      "description": "Footer updates including caffeine.ai attribution and dynamic UTM tracking.",
+      "reason": "Not requested by the BuildRequest; unrelated to admin access and admin page functionality.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/content/sampleContent.ts)",
-        "frontend-file-summaries.txt (frontend/src/pages/ServicesPage.tsx)"
-      ]
-    },
-    {
-      "description": "Site header/footer navigation and contact details updates (including UTM tracking attribution changes).",
-      "reason": "Not requested; unrelated to admin access mismatch fix.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/SiteHeader.tsx)",
-        "frontend-file-summaries.txt (frontend/src/components/SiteFooter.tsx)",
-        "frontend-file-summaries.txt (frontend/src/pages/ContactPage.tsx)"
-      ]
-    },
-    {
-      "description": "New app-shell/mobile navigation behavior changes (AppShell, AppPage, cart route navigation integration).",
-      "reason": "Not requested; beyond scope and counts as new UI behavior.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/pages/AppPage.tsx)",
-        "frontend-file-summaries.txt (frontend/src/components/app/AppShell.tsx)"
-      ]
-    },
-    {
-      "description": "Backend migration includes deprecated admin token and principal fields in OldActor type (adminTokenAtomico/adminTokenRhythm/userProvidedTokenForTest).",
-      "reason": "The BuildRequest explicitly notes admin recognition must not depend on URL tokens; introducing/keeping token-related fields in migration is not requested (even if for backwards compatibility).",
-      "evidence": [
-        "backend/migration.mo"
+        "frontend-file-summaries.txt"
       ]
     }
   ],
-  "confidence": 0.68,
+  "confidence": 0.64,
   "changed_files": [
     "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
     "frontend/src/components/admin/AdminGuard.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/AdminPage.tsx",
+    "frontend/tailwind.config.js",
     "project_state.json"
   ]
 }
